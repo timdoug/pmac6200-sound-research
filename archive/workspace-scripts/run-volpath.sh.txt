@@ -1,0 +1,119 @@
+#!/bin/bash
+# Boot pmac6200 from a fresh disk with DFACProbe in Startup Items, record audio, pull out the report.
+#
+# The machine is driven entirely through asctest-drive.lua's command file, so this needs no
+# hand-holding: Return dismisses the "not shut down properly" dialog, Cmd-O opens the hard
+# disk, then type-select plus Cmd-O launches the app.
+#
+# Usage: ./run-asctester.sh [seconds-to-wait-after-launch]
+set -u
+
+WAIT_AFTER="${1:-150}"
+CMD=/tmp/pmac6200-cmd
+SNAP=/tmp/pmac6200.png
+
+pkill -9 -f "cordyceps pmac6200" 2>/dev/null
+sleep 3
+
+rm -f disks/pmac6200-volpath.hd
+cp -c disks/pmac6200-ata.BASELINE.hd disks/pmac6200-volpath.hd 2>/dev/null || \
+	cp disks/pmac6200-ata.BASELINE.hd disks/pmac6200-volpath.hd
+hmount disks/pmac6200-volpath.hd >/dev/null 2>&1
+# Dropped into Startup Items so the Finder launches it itself as part of coming up.  Driving
+# the Finder by keyboard to open it was the single flakiest part of this script: what is
+# selected after the shutdown dialog varies, type-select sometimes misses, and the Cmd-O
+# chord sometimes does not register -- and because ASCTester draws nothing there is no way
+# to tell from a snapshot which of those went wrong.  Letting the Finder do it removes every
+# one of those failure modes.  This baseline has no Startup Items folder, so create it; the
+# Finder locates it by name inside the blessed System Folder, and one made here works.
+hmkdir ":System Folder:Startup Items" 2>/dev/null
+hcopy -m VolPath/VolPath.bin ":System Folder:Startup Items:ZVolPath"
+humount >/dev/null 2>&1
+
+# Clear the results file up front.  Without this a run that never manages to launch the app
+# leaves the previous run's results in place and the extraction below reports them as if they
+# were fresh, which is a good way to spend an hour explaining numbers from an old build.
+rm -f /tmp/volpath-mame.txt
+rm -f nvram/pmac6200/cuda cfg/pmac6200.cfg "$SNAP" "$CMD"
+touch "$CMD"
+
+# -seconds_to_run under 300 is what actually suppresses the "system is broken" warning
+# screen (see display_startup_screens in src/frontend/mame/ui/ui.cpp) -- -skip_gameinfo only
+# covers the system information screen.  It also makes MAME exit cleanly at the end, which
+# flushes the disk image so the results file can be read back out of it.
+nohup ./cordyceps pmac6200 -window -skip_gameinfo -seconds_to_run 280 -ram 64m \
+	-wavwrite /tmp/volpath-mame.wav -hard disks/pmac6200-volpath.hd \
+	-autoboot_script asctest-drive.lua -autoboot_delay 0 \
+	> /tmp/pmac6200.log 2>&1 &
+
+# Poll rather than sleeping a fixed amount: snapshot repeatedly and wait for the frame to
+# stop changing, which means whatever is on screen has settled.  This has to be done again
+# after every keystroke, otherwise a step can fire while the previous screen is still up --
+# sending Return at the desktop, say, instead of at the shutdown dialog.
+snapsize() { rm -f "$SNAP"; echo "snap" > "$CMD"; sleep 3; stat -f%z "$SNAP" 2>/dev/null || echo 0; }
+
+settle() {
+	local last=0 size
+	for _ in $(seq 1 "${1:-30}"); do
+		size=$(snapsize)
+		if [ "$size" -gt 5000 ] && [ "$size" = "$last" ]; then
+			return 0
+		fi
+		last=$size
+	done
+	return 1
+}
+
+echo "booting..."
+settle 30 && echo "screen settled"
+
+# dismiss the "not shut down properly" dialog
+printf 'bit KEY2 16 1\nwait 10\nbit KEY2 16 0\n' > "$CMD"
+settle 10
+
+# Nothing else to drive: the Finder opens Startup Items on its own once the desktop is up.
+# Poll the disk image for the finished report (the app calls FlushVol after writing it) and
+# stop MAME the moment it is there, rather than waiting out -seconds_to_run.
+fetch() {
+	hmount disks/pmac6200-volpath.hd >/dev/null 2>&1 || return 1
+	hcopy -t ":System Folder:Startup Items:VolPathResults.txt" /tmp/volpath-mame.txt 2>/dev/null || \
+		hcopy -t ":Desktop Folder:VolPathResults.txt" /tmp/volpath-mame.txt 2>/dev/null || \
+		hcopy -t :VolPathResults.txt /tmp/volpath-mame.txt 2>/dev/null
+	humount >/dev/null 2>&1
+	grep -q '^restored' /tmp/volpath-mame.txt 2>/dev/null
+}
+
+echo "launched; waiting for the report"
+for _ in $(seq 1 "$((WAIT_AFTER / 3))"); do
+	pgrep -f "cordyceps pmac6200" >/dev/null || break
+	fetch && break
+	sleep 3
+done
+
+# let the closing beeps reach the WAV, then ask MAME to exit cleanly so the WAV header is
+# written; fall back to killing it
+sleep 2
+echo "exit" > "$CMD"
+for _ in $(seq 1 10); do
+	pgrep -f "cordyceps pmac6200" >/dev/null || break
+	sleep 1
+done
+pkill -f "cordyceps pmac6200"
+for _ in $(seq 1 10); do
+	pgrep -f "cordyceps pmac6200" >/dev/null || break
+	sleep 1
+done
+
+hmount disks/pmac6200-volpath.hd >/dev/null 2>&1
+# the app writes next to itself, so look there first, then at the volume root
+hcopy -t ":System Folder:Startup Items:VolPathResults.txt" /tmp/volpath-mame.txt 2>/dev/null || \
+	hcopy -t ":Desktop Folder:VolPathResults.txt" /tmp/volpath-mame.txt 2>/dev/null || \
+	hcopy -t :VolPathResults.txt /tmp/volpath-mame.txt 2>/dev/null
+humount >/dev/null 2>&1
+
+if [ -s /tmp/volpath-mame.txt ]; then
+	echo "results -> /tmp/volpath-mame.txt"
+else
+	echo "NO RESULTS: the app did not run.  Check $SNAP for where it got stuck." >&2
+	exit 1
+fi

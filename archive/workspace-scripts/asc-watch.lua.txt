@@ -1,0 +1,61 @@
+-- Watch who touches the ASC on pmac6200.
+--
+-- ROM lives at 40000000/40800000/ffc00000; RAM is low.  Classifying the PC tells
+-- us whether the Sound Manager code is in the boot ROM or paged in from the
+-- System file, and whether we are seeing native PowerPC code or the 68k
+-- emulator's dispatch loop.
+
+local hits = 0
+local seen = {}
+local cpu = nil
+local frames = 0
+
+local function classify(pc)
+	if (pc >= 0x40000000 and pc <= 0x40bfffff) or (pc >= 0xffc00000) then
+		return "ROM"
+	elseif pc < 0x08000000 then
+		return "RAM"
+	end
+	return "other"
+end
+
+local function pc_of()
+	if cpu == nil then return 0 end
+	for _, sym in ipairs({"CURPC", "PC"}) do
+		local ok, v = pcall(function () return cpu.state[sym].value end)
+		if ok and v then return v end
+	end
+	return 0
+end
+
+local function note(pc)
+	hits = hits + 1
+	local key = string.format("%08x %s", pc, classify(pc))
+	seen[key] = (seen[key] or 0) + 1
+end
+
+subscription = emu.add_machine_frame_notifier(function ()
+	frames = frames + 1
+
+	if cpu == nil then
+		cpu = manager.machine.devices[":maincpu"]
+		local space = cpu.spaces["program"]
+		-- whole ASC window, both the mirror the driver uses and the base copy
+		tap_hi = space:install_read_tap(0x50f14000, 0x50f14fff, "aschi",
+			function (offset, data, mask) if hits < 100000 then note(pc_of()) end end)
+		tap_lo = space:install_read_tap(0x50014000, 0x50014fff, "asclo",
+			function (offset, data, mask) if hits < 100000 then note(pc_of()) end end)
+		print("ASCWATCH taps installed")
+		return
+	end
+
+	if (frames % 300) == 0 then
+		print(string.format("ASCWATCH hits=%d", hits))
+		local n = 0
+		for k, c in pairs(seen) do
+			print(string.format("  pc=%s x%d", k, c))
+			n = n + 1
+			if n > 12 then break end
+		end
+	end
+end)

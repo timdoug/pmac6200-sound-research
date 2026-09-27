@@ -1,0 +1,48 @@
+XAProbe v1
+start          DFAC2 20 96 1A 16 00 10 47 02 07 41 10  801:00 802:1F 804:0E 806:EE 808:00 80A:02 F09:01 F29:01
+ F00: 00 00 00 00 00 00 00 00 00 01 00 00 00 00 33 00
+ F20: 00 00 00 00 00 00 00 00 00 01 02 E4 02 E4 19 00
+
+[cd] no FIFO data; each input source, then the output loopback (5 = left, 6 = right)
+ cd src 0         mean    -14 rms     2 tone     0 | 7FF6 7FF6 7FF6 7FF6
+ cd src 1         mean    -21 rms     0 tone     0 | 7FEB 7FEB 7FEB 7FEB
+ cd src 2         mean    -21 rms     0 tone     0 | 7FEB 7FEB 7FEB 7FEB
+ cd src 3         mean    -18 rms     1 tone     0 | 7FF0 7FF0 7FF0 7FEE
+ cd src 4         mean    -30 rms  1242 tone    16 | 7DCF 7D9A 7CB0 7C8B
+ cd src 5         mean   -213 rms  2824 tone    12 | 85C9 855E 875B 874D
+ cd src 6         mean    -58 rms  3147 tone    65 | 8BDC 8CF9 8E75 8E46
+ cd src 7         mean   -105 rms     8 tone     0 | 7F8B 7F8B 7F8B 7F8B
+ cd out 5         mean    -32 rms  2946 tone    50 | 841C 851C 84D4 853C
+ cd out 5 plth^   mean     43 rms  4072 tone    48 | 8032 7FD8 7FA0 7F2F
+ cd out 5 0C=4    mean    -36 rms  2803 tone    39 | 8ABF 8C91 8DB7 8E16
+ cd out 6         mean   -110 rms  3103 tone   100 | 8DDD 8D1F 8E9B 8D45
+ cd out 6 plth^   mean   -189 rms  4099 tone    32 | 97A1 9774 9704 9638
+ cd out 6 0C=4    mean    -93 rms   901 tone    28 | 82EC 8314 81D4 817C
+
+[xa] through source 6; tag = $F28 value, stream
+ F28=0 plain      mean    -39 rms  1569 tone  1981  bytes/sample 1.027 | 7710 7760 777C 7778
+ F28=0 mame4      mean   -118 rms  3010 tone    13  bytes/sample 1.027 | 7823 78E3 780B 7D93
+ F28=0 mame8      mean   -186 rms  6639 tone   272  bytes/sample 1.027 | 977A 96CA 953A 957A
+ F28=0 group4     mean   -168 rms  3330 tone    85  bytes/sample 1.027 | 864E 7C27 83AB 8178
+ F28=0 group8     mean   -169 rms  3866 tone   376  bytes/sample 1.027 | 965A 95DE 90C5 75FF
+ F28=1 plain      mean    -79 rms  1468 tone  1971  bytes/sample 1.027 | 76C2 77B2 78DB 79AB
+ F28=1 mame4      mean   -104 rms  2966 tone     7  bytes/sample 1.027 | 7AD3 7A73 769A 7DD3
+ F28=1 mame8      mean   -458 rms  6948 tone   326  bytes/sample 1.027 | A2B6 9E8D A244 A126
+ F28=1 group4     mean   -413 rms  4142 tone    86  bytes/sample 1.026 | 91B1 8351 888B 8575
+ F28=1 group8     mean   -159 rms  4817 tone   427  bytes/sample 1.026 | 99BB 997B 8EF9 73D6
+ F28=2 plain      mean    -10 rms  3351 tone  1926  bytes/sample 1.027 | 791E 7940 78E6 7A0B
+ F28=2 mame4      mean     -1 rms  3983 tone    29  bytes/sample 1.027 | 6AF6 6C6A 6A15 7080
+ F28=2 mame8      mean   -166 rms  6968 tone   333  bytes/sample 1.027 | 880E 886D 867F 841E
+ F28=2 group4     mean   -294 rms  4349 tone    73  bytes/sample 1.027 | 717F 6685 6CCB 6972
+ F28=2 group8     mean   -272 rms  4667 tone   366  bytes/sample 1.027 | 86D8 8748 8058 6744
+ F28=3 plain      mean   -260 rms  3270 tone  1916  bytes/sample 1.027 | 860B 87A0 89E9 89D3
+ F28=3 mame4      mean   -388 rms  4146 tone    10  bytes/sample 1.027 | 70A9 71F7 70C3 77D2
+ F28=3 mame8      mean   -448 rms  7183 tone   310  bytes/sample 1.026 | 9DFB 9CFB 9B3B 9BBB
+ F28=3 group4     mean    -68 rms  4401 tone   133  bytes/sample 1.026 | A6FC 99DB A10C 99BB
+ F28=3 group8     mean   -330 rms  4944 tone   472  bytes/sample 1.027 | A0EC 9F9B 99FB 8048
+ F28=81 group4    mean   -356 rms  4275 tone    63  bytes/sample 1.026 | 9196 8525 8A95 8714
+ F28=82 group4    mean     75 rms  4221 tone    76  bytes/sample 1.026 | 8243 75E9 7D40 7BEF
+ F28=83 group4    mean    -82 rms  4628 tone    72  bytes/sample 1.027 | 978A 86D8 8ED9 8C99
+ F28=0 plain'     mean   -276 rms  3343 tone  1967  bytes/sample 1.027 | 6BD2 69BE 685E 6783
+final          DFAC2 20 96 1A 16 00 10 47 02 07 41 10  801:00 802:1F 804:0E 806:EE 808:00 80A:02 F09:01 F29:01
+restored

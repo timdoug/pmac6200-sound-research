@@ -1,0 +1,382 @@
+RecProbe v3
+start          DFAC2 20 96 1A 16 00 10 47 02 07 41 10  801:00 802:1F 804:0E 806:EE 808:00 80A:02 F09:01 F29:01
+ 800: BB 00 1F 00 0E 00 EE 00 00 00 02 00 00 00 00 00
+ F00: 00 00 00 00 00 00 00 00 00 01 00 00 00 00 18 00
+ F20: 00 00 00 00 00 00 00 00 00 01 02 E4 02 E4 26 00
+
+[802] write -> read: 00->00 01->01 05->05 0A->0A 10->10 15->15 1A->1A 1F->1F 20->00 80->00 FF->1F  restored 1F->1F
+[80A] write -> read: 00->02 01->03 02->02 03->03 00->02 FF->03 00->02  restored 02->02
+
+[raw] FIFO A in record mode, interrupts on, FIFO interrupts off, polling
+
+-- $801=1 $80A=1 --
+ after reset:  A wr 000 rd 000  B wr 000 rd 000  804 0E
+ 108 samples in 70ms, 400us apart or on a status change (t us: A wr rd  B wr rd  804)
+      95: 002 000  000 000  0C
+     513: 014 000  000 000  0C
+     964: 028 000  000 000  0C
+    1413: 03C 000  000 000  0C
+    1862: 050 000  000 000  0C
+    2312: 063 000  000 000  0C
+    2761: 076 000  000 000  0C
+    3210: 08A 000  000 000  0C
+    3660: 09E 000  000 000  0C
+    5458: 0EE 000  000 000  0C
+    7262: 13E 000  000 000  0C
+    9011: 18A 000  000 000  0C
+   10811: 1DA 000  000 000  0C
+   12613: 22A 000  000 000  0C
+   14344: 276 000  000 000  0C
+   16046: 2C0 000  000 000  0C
+   17837: 310 000  000 000  0C
+   19638: 360 000  000 000  0C
+   21387: 3AC 000  000 000  0C
+   23186: 3FC 000  000 000  0C
+   23306: 400 000  000 000  0D  <- 804
+   24607: 43A 000  000 000  0D
+   26410: 48A 000  000 000  0D
+   28171: 4D8 000  000 000  0D
+   29968: 526 000  000 000  0D
+   31721: 574 000  000 000  0D
+   33590: 5C6 000  000 000  0D
+   35390: 616 000  000 000  0D
+   37193: 666 000  000 000  0D
+   38993: 6B4 000  000 000  0D
+   40764: 702 000  000 000  0D
+   42459: 74E 000  000 000  0D
+   44158: 798 000  000 000  0D
+   45860: 7E4 000  000 000  0D
+   46473: 7FE 000  000 000  0F  <- 804
+   46894: 000 000  000 000  0F
+ A write pointer: 1258 steps in 28525 us -> 44101 Hz
+ before reads: A wr 000 rd 000 804 0F
+ word reads $1000 (value, A rd after): 00E9/002 7FE9/004 7FE9/006 7FE9/008 7FE9/00A 7FE9/00C
+ byte reads $000: 7F/00E 7F/010 7F/012 7F/014 7F/016 7F/018
+ long reads $1000: 7FE97FE9/01C 7FE97FE9/020 7FE97FE9/024
+ word reads $1800 (value, B rd after): 7FE9/000 7FE9/000 7FE9/000
+ 802 while recording: 1F 1F 1F 1F 1F 1F 1F 1F
+ $80A=0: A wr 02A -> 02A over 10ms, rd 02A, 804 0F
+
+-- $801=1 $80A=3 --
+ after reset:  A wr 000 rd 000  B wr 000 rd 000  804 0E
+ 111 samples in 70ms, 400us apart or on a status change (t us: A wr rd  B wr rd  804)
+     140: 002 000  000 000  0C
+     577: 014 000  000 000  0C
+    1001: 028 000  000 000  0C
+    1424: 03A 000  000 000  0C
+    1848: 04C 000  000 000  0C
+    2272: 060 000  000 000  0C
+    2700: 072 000  000 000  0C
+    3123: 084 000  000 000  0C
+    3547: 098 000  000 000  0C
+    5243: 0E2 000  000 000  0C
+    7138: 136 000  000 000  0C
+    8851: 182 000  000 000  0C
+   10570: 1CE 000  000 000  0C
+   12265: 218 000  000 000  0C
+   13959: 262 000  000 000  0C
+   15654: 2AE 000  000 000  0C
+   17353: 2F8 000  000 000  0C
+   19048: 344 000  000 000  0C
+   20744: 38E 000  000 000  0C
+   22443: 3D8 000  000 000  0C
+   23362: 402 000  000 000  0D  <- 804
+   23777: 414 000  000 000  0D
+   25486: 460 000  000 000  0D
+   27204: 4AA 000  000 000  0D
+   28903: 4F6 000  000 000  0D
+   30600: 540 000  000 000  0D
+   32294: 58C 000  000 000  0D
+   33989: 5D6 000  000 000  0D
+   35684: 620 000  000 000  0D
+   37385: 66C 000  000 000  0D
+   39080: 6B6 000  000 000  0D
+   40847: 704 000  000 000  0D
+   42555: 750 000  000 000  0D
+   44254: 79A 000  000 000  0D
+   45948: 7E6 000  000 000  0D
+   46561: 000 000  000 000  0F  <- 804
+ A write pointer: 1964 steps in 44536 us -> 44099 Hz
+ before reads: A wr 000 rd 000 804 0F
+ word reads $1000 (value, A rd after): 7FE9/002 7FE9/004 7FE9/006 7FE9/008 7FE9/00A 7FE9/00C
+ byte reads $000: 7F/00E 7F/010 7F/012 7F/014 7F/016 7F/018
+ long reads $1000: 7FE97FE9/01C 7FE97FE9/020 7FE97FE9/024
+ word reads $1800 (value, B rd after): 7FE9/000 7FE9/000 7FE9/000
+ 802 while recording: 1F 1F 1F 1F 1F 1F 1F 1F
+ $80A=0: A wr 02A -> 02A over 10ms, rd 02A, 804 0F
+
+-- $801=1 $80A=2 --
+ after reset:  A wr 000 rd 000  B wr 000 rd 000  804 0E
+ 1 samples in 70ms, 400us apart or on a status change (t us: A wr rd  B wr rd  804)
+      69: 000 000  000 000  0E
+ before reads: A wr 000 rd 000 804 0E
+ word reads $1000 (value, A rd after): 7FE9/000 E9E9/000 E9E9/000 E9E9/000 E9E9/000 E9E9/000
+ byte reads $000: E9/000 E9/000 E9/000 E9/000 E9/000 E9/000
+ long reads $1000: E9E9E9E9/000 E9E9E9E9/000 E9E9E9E9/000
+ word reads $1800 (value, B rd after): E9E9/000 E9E9/000 E9E9/000
+ 802 while recording: 1F 1F 1F 1F 1F 1F 1F 1F
+ $80A=0: A wr 000 -> 000 over 10ms, rd 000, 804 0E
+
+-- $801=0 $80A=1 --
+ after reset:  A wr 000 rd 000  B wr 000 rd 000  804 0E
+ 110 samples in 70ms, 400us apart or on a status change (t us: A wr rd  B wr rd  804)
+     163: 002 000  000 000  0C
+     602: 014 000  000 000  0C
+    1026: 028 000  000 000  0C
+    1450: 03A 000  000 000  0C
+    1874: 04C 000  000 000  0C
+    2298: 060 000  000 000  0C
+    2721: 072 000  000 000  0C
+    3145: 084 000  000 000  0C
+    3569: 098 000  000 000  0C
+    5306: 0E4 000  000 000  0C
+    7026: 130 000  000 000  0C
+    8725: 17B 000  000 000  0C
+   10423: 1C6 000  000 000  0C
+   12127: 210 000  000 000  0C
+   13825: 25C 000  000 000  0C
+   15525: 2A6 000  000 000  0C
+   17397: 2FA 000  000 000  0C
+   19194: 348 000  000 000  0C
+   20995: 398 000  000 000  0C
+   22896: 3EC 000  000 000  0C
+   23394: 402 000  000 000  0D  <- 804
+   24248: 428 000  000 000  0D
+   25943: 472 000  000 000  0D
+   27639: 4BC 000  000 000  0D
+   29338: 508 000  000 000  0D
+   31037: 552 000  000 000  0D
+   32737: 59E 000  000 000  0D
+   34435: 5E8 000  000 000  0D
+   36133: 634 000  000 000  0D
+   37829: 67E 000  000 000  0D
+   39541: 6CA 000  000 000  0D
+   41241: 714 000  000 000  0D
+   42938: 760 000  000 000  0D
+   44636: 7AA 000  000 000  0D
+   46335: 7F6 000  000 000  0D
+   46583: 000 000  000 000  0F  <- 804
+ A write pointer: 1980 steps in 44900 us -> 44097 Hz
+ before reads: A wr 000 rd 000 804 0F
+ word reads $1000 (value, A rd after): E9E9/002 7FE9/004 7FE9/006 7FE9/008 7FE9/00A 7FE9/00C
+ byte reads $000: 7F/00E 7F/010 7F/012 7F/014 7F/016 7F/018
+ long reads $1000: 7FE97FE9/01C 7FE97FE9/020 7FE97FE9/024
+ word reads $1800 (value, B rd after): 7FE9/000 7FE9/000 7FE9/000
+ 802 while recording: 1F 1F 1F 1F 1F 1F 1F 1F
+ $80A=0: A wr 02A -> 02A over 10ms, rd 02A, 804 0F
+
+-- $801=1 $80A=0 --
+ after reset:  A wr 000 rd 000  B wr 000 rd 000  804 0E
+ 1 samples in 70ms, 400us apart or on a status change (t us: A wr rd  B wr rd  804)
+      94: 000 000  000 000  0E
+ before reads: A wr 000 rd 000 804 0E
+ word reads $1000 (value, A rd after): 7FE9/000 E9E9/000 E9E9/000 E9E9/000 E9E9/000 E9E9/000
+ byte reads $000: E9/000 E9/000 E9/000 E9/000 E9/000 E9/000
+ long reads $1000: E9E9E9E9/000 E9E9E97F/000 7FE9E9E9/000
+ word reads $1800 (value, B rd after): E9E9/000 E9E9/000 E9E9/000
+ 802 while recording: 1F 1F 1F 1F 1F 1F 1F 1F
+ $80A=0: A wr 000 -> 000 over 10ms, rd 000, 804 0E
+
+[capture] 2016 words after 1024 settling, 16-bit window, $80A=1; tone = 612.5Hz in FIFO B at 1/4 scale
+ silence      ob mean    -23 rms     0 tone     0  junk    0 | 7FE9 7FE9 7FE9 7FE9
+ tone         ob mean    -23 rms     0 tone     0  junk    0 | 7FE9 7FE9 7FE9 7FE9
+ src 0        ob mean    -14 rms     2 tone     0  junk    0 | 7FF6 7FF6 7FF6 7FF6
+ src 1        ob mean    -21 rms     0 tone     0  junk    0 | 7FEB 7FEB 7FEB 7FEB
+ src 2        ob mean    -21 rms     0 tone     0  junk    0 | 7FEB 7FEB 7FEB 7FEB
+ src 3        ob mean    -18 rms     1 tone     0  junk    0 | 7FF1 7FF0 7FF0 7FF0
+ src 4        ob mean     -5 rms     4 tone     0  junk    0 | 8004 8004 8002 8004
+ src 5        ob mean    -51 rms  1557 tone  2202  junk    0 | 77D8 7778 7750 7760
+ src 6        ob mean    -55 rms  1564 tone  2212  junk    0 | 776C 7744 7758 77A4
+ src 7        ob mean    -32 rms     3 tone     0  junk    0 | 7FDA 7FDA 7FDA 7FDA
+ mode 1       ob mean   -176 rms    24 tone     1  junk    0 | 7F84 7F84 7F84 7F9A
+ mode 1 sil   ob mean   -100 rms     3 tone     0  junk    0 | 7F9B 7F9B 7F9B 7F9B
+ mode 2       ob mean    -60 rms    13 tone     1  junk    0 | 7FDB 7FDB 7FE6 7FDB
+ mode 2 sil   ob mean    -85 rms     2 tone     0  junk    0 | 7FAB 7FAB 7FAB 7FAB
+ mode 3       ob mean    -97 rms     4 tone     3  junk    0 | 7FA3 7FA3 7FA3 7FA3
+ mode 3 sil   ob mean   -100 rms     1 tone     0  junk    0 | 7F9B 7F9B 7F9B 7F9B
+ mode 4       2c mean  32718 rms     1 tone     0  junk    0 | 7FD5 7FD1 7FD5 7FD1
+ mode 4 sil   ob mean    -51 rms     1 tone     0  junk    0 | 7FCD 7FCD 7FCD 7FCD
+
+[sweeps] source 5
+ ref          ob mean    -14 rms  1556 tone  2200  junk    4 | 77FC 77A0 7778 7788
+ ref'         ob mean    -40 rms  1556 tone  2201  junk    0 | 77E8 7784 7760 7770
+ 806 R7       ob mean    -39 rms  1558 tone  2203  junk    2 | 77E4 7784 7760 7770
+ 806 R7'      ob mean    -37 rms  1557 tone  2202  junk    4 | 7820 77C6 77A4 77AE
+ 806 R6       ob mean    -37 rms  1555 tone  2199  junk    7 | 77EC 7784 775C 7774
+ 806 R6'      ob mean    -38 rms  1556 tone  2200  junk    7 | 77EC 7780 775C 7774
+ 806 R5       ob mean    -41 rms  1559 tone  2204  junk    0 | 77E4 7784 775C 7770
+ 806 R5'      ob mean    -40 rms  1559 tone  2205  junk    0 | 77E4 7784 775C 7770
+ 806 R4       ob mean    -39 rms  1559 tone  2205  junk    0 | 77E4 7784 775C 7770
+ 806 R4'      ob mean    -38 rms  1557 tone  2202  junk    4 | 77E4 7784 7760 7770
+ 806 R3       ob mean    -39 rms  1557 tone  2201  junk    3 | 77E4 7784 7760 7770
+ 806 R3'      ob mean    -39 rms  1558 tone  2203  junk    0 | 77E4 7784 775C 7770
+ 806 R2       ob mean    -40 rms  1558 tone  2203  junk    0 | 77E4 7784 7760 7770
+ 806 R2'      ob mean    -40 rms  1557 tone  2201  junk    2 | 77E4 7784 7760 7770
+ 806 R1       ob mean    -39 rms  1557 tone  2201  junk    4 | 77E8 7784 7760 7770
+ 806 R1'      ob mean    -41 rms  1557 tone  2203  junk    1 | 77E4 7784 7760 7770
+ 806 R0       ob mean    -39 rms  1558 tone  2203  junk    0 | 77E8 7784 7760 7770
+ 806 R0'      ob mean    -38 rms  1556 tone  2200  junk    4 | 77E8 7788 7760 7770
+ 806 L7       ob mean    -39 rms  1556 tone  2200  junk    5 | 77E8 7788 7760 7770
+ 806 L7'      ob mean    -40 rms  1557 tone  2201  junk    3 | 77E8 7784 7760 7770
+ 806 L6       ob mean   -110 rms  4189 tone  5751  junk    1 | 6D07 68A1 6B67 6804
+ 806 L6'      ob mean   -103 rms  4197 tone  5762  junk   37 | 69FF 6512 68DA 6788
+ 806 L5       ob mean    -36 rms  3364 tone  4453  junk    8 | 8D6B 8CE5 8CC4 8C9B
+ 806 L5'      ob mean    -67 rms  3374 tone  4466  junk    8 | 8D25 8C9D 8C6D 8C4D
+ 806 L4       ob mean    -72 rms  2174 tone  2672  junk   44 | 87C9 853E 868F 8468
+ 806 L4'      ob mean    -69 rms  2173 tone  2670  junk   48 | 87D7 8547 8699 847B
+ 806 L3       ob mean    -46 rms  1693 tone  2239  junk    4 | 8676 8636 861E 860E
+ 806 L3'      ob mean    -46 rms  1698 tone  2245  junk    1 | 8680 863D 862C 8615
+ 806 L2       ob mean    -34 rms  1083 tone  1328  junk    1 | 83E7 8298 8347 822D
+ 806 L2'      ob mean    -32 rms  1081 tone  1327  junk    0 | 83E2 829C 8345 822E
+ 806 L1       ob mean    -23 rms   845 tone  1117  junk    0 | 833E 831D 830C 8305
+ 806 L1'      ob mean    -16 rms   836 tone  1104  junk    0 | 8345 8321 8315 830B
+ 806 L0       ob mean    -16 rms     1 tone     0  junk    0 | 7FE9 7FEB 7FEB 7FE9
+ 806 L0'      ob mean    -20 rms     0 tone     0  junk    0 | 7FEC 7FEE 7FEB 7FEE
+ 0C atten 7   ob mean    -38 rms  1556 tone  2200  junk    6 | 77EC 7788 7760 7774
+ 0C atten 7'  ob mean    -39 rms  1554 tone  2198  junk    8 | 77EC 7788 7764 7770
+ 0C atten 6   ob mean    -29 rms  1099 tone  1554  junk    5 | 7A4A 7A06 79EA 79F5
+ 0C atten 6'  ob mean    -29 rms  1098 tone  1553  junk    4 | 7A4A 7A06 79E7 79F3
+ 0C atten 5   ob mean    -24 rms   768 tone  1086  junk   10 | 7BFC 7BCC 7BB8 7BC0
+ 0C atten 5'  ob mean    -23 rms   768 tone  1086  junk   29 | 7BFE 7BCC 7BB8 7BC0
+ 0C atten 4   ob mean    -21 rms   552 tone   781  junk    0 | 7D18 7CF3 7CE4 7CEB
+ 0C atten 4'  ob mean    -21 rms   552 tone   781  junk    0 | 7D1A 7CF3 7CE4 7CEB
+ 0C atten 3   ob mean    -21 rms   390 tone   552  junk    1 | 7DEB 7DD0 7DC6 7DCB
+ 0C atten 3'  ob mean    -21 rms   390 tone   552  junk    0 | 7DEB 7DD2 7DC6 7DCB
+ 0C atten 2   ob mean    -21 rms   279 tone   395  junk    1 | 7E7E 7E6A 7E62 7E65
+ 0C atten 2'  ob mean    -21 rms   279 tone   395  junk    2 | 7E7E 7E6A 7E62 7E67
+ 0C atten 1   ob mean    -20 rms   195 tone   277  junk    0 | 7EE9 7EDC 7ED8 7EDA
+ 0C atten 1'  ob mean    -20 rms   195 tone   277  junk    0 | 7EE9 7EDD 7ED7 7EDA
+ 0C atten 0   ob mean    -20 rms     0 tone     0  junk    0 | 7FEC 7FEC 7FEC 7FEB
+ 0C atten 0'  ob mean    -20 rms     0 tone     0  junk    0 | 7FEC 7FEC 7FEC 7FEC
+ 0C ^bit7     ob mean    -39 rms  1557 tone  2202  junk    3 | 77E8 7788 7760 7770
+ 0C ^bit7'    ob mean    -40 rms  1557 tone  2202  junk    2 | 781D 77C2 779E 77AE
+ 0C ^bit6     ob mean    -38 rms  1554 tone  2198  junk    4 | 77EC 7788 7760 7774
+ 0C ^bit6'    ob mean    -39 rms  1554 tone  2198  junk    7 | 77EC 778C 7764 7774
+ 0D ^bit2     ob mean    -63 rms  2235 tone  3153  junk   14 | 76F1 759C 749E 73F7
+ 0D ^bit2'    ob mean    -73 rms  2270 tone  3195  junk   20 | 76E4 758F 7491 73E9
+ 0D ^bit3     ob mean    -43 rms   795 tone  1124  junk    9 | 7BBD 7B85 7B71 7B79
+ 0D ^bit3'    ob mean    -23 rms   771 tone  1091  junk   28 | 7BF8 7BC8 7BB4 7BC0
+ 0D ^bit5     ob mean    -40 rms  1555 tone  2199  junk    4 | 77EC 7788 7760 7770
+ 0D ^bit5'    ob mean    -39 rms  1554 tone  2197  junk    5 | 77EC 7788 7760 7774
+ 0D ^bit6     ob mean      0 rms    11 tone    15  junk    0 | 7FF8 7FF6 7FF6 7FF6
+ 0D ^bit6'    ob mean      0 rms    11 tone    15  junk    0 | 7FF6 7FF5 7FF5 7FF6
+ 0D ^bit7     ob mean    -38 rms  1580 tone  2234  junk    0 | 7802 77A8 7783 7790
+ 0D ^bit7'    ob mean    -39 rms  1581 tone  2235  junk    1 | 77C8 7764 7740 7750
+ 0E ^bit6     ob mean    -38 rms  1555 tone  2200  junk    4 | 77E8 7784 7760 7770
+ 0E ^bit6'    ob mean    -41 rms  1556 tone  2200  junk    4 | 77E8 7784 7760 7770
+ 0F ^bit7     ob mean   2353 rms 11092 tone 10698  junk    3 | 5803 222D 4780 7C67
+ 0F ^bit7'    ob mean   2430 rms 11119 tone 10783  junk    3 | 5803 222D 4780 7C67
+ 0F ^bit6     ob mean    -35 rms  1556 tone  2200  junk    6 | 77F0 778C 7764 7774
+ 0F ^bit6'    ob mean    -39 rms  1556 tone  2200  junk    8 | 77F0 778C 7760 7774
+ 0F ^bit5     ob mean    -40 rms  1555 tone  2199  junk    5 | 77EC 7788 7760 7770
+ 0F ^bit5'    ob mean    -39 rms  1554 tone  2198  junk    4 | 7823 77C6 77A4 77B2
+ 0F ^bit4     ob mean -27390 rms     0 tone     0  junk    0 | 1502 1502 1502 1502
+ 0F ^bit4'    ob mean -27390 rms     0 tone     0  junk    0 | 1502 1502 1502 1502
+ 0F ^bit1     ob mean    -39 rms  1556 tone  2200  junk    4 | 77EC 7788 7760 7774
+ 0F ^bit1'    ob mean    -37 rms  1556 tone  2200  junk    6 | 7823 77C9 77A4 7610
+ 0F ^bit0     ob mean    -39 rms  1554 tone  2197  junk    5 | 77EC 7788 7760 7774
+ 0F ^bit0'    ob mean    -38 rms  1554 tone  2197  junk    9 | 77EC 7788 7760 7774
+ 801=0        ob mean    -24 rms     1 tone     0  junk    0 | 7FEE 7FEE 7FEC 7FEC
+ 801=0'       ob mean    -20 rms     0 tone     0  junk    0 | 7FEC 7FEC 7FEE 7FEC
+ ref again    ob mean    -47 rms  1556 tone  2201  junk    0 | 77D8 7778 7750 7764
+ ref again'   ob mean    -38 rms  1555 tone  2199  junk    4 | 77EC 7788 7760 7774
+
+[sweeps] source 6
+ ref          ob mean    -38 rms  1560 tone  2206  junk    5 | 7784 775C 7770 77C0
+ ref'         ob mean    -43 rms  1560 tone  2206  junk    0 | 7780 7758 776C 77BC
+ 806 R7       ob mean    -44 rms  1562 tone  2208  junk    0 | 7780 7758 7768 77B8
+ 806 R7'      ob mean    -43 rms  1561 tone  2208  junk    0 | 7780 7758 776C 77B8
+ 806 R6       ob mean   -109 rms  3780 tone  4834  junk    0 | 778D 8281 7218 6D61
+ 806 R6'      ob mean    -98 rms  3783 tone  4837  junk    0 | 77AA 829E 723E 6D87
+ 806 R5       ob mean    -41 rms  3375 tone  4463  junk    2 | 8CFD 8CCD 8C9D 8C85
+ 806 R5'      ob mean    -73 rms  3385 tone  4476  junk    5 | 8C9D 8C65 8C45 8C1D
+ 806 R4       ob mean    -82 rms  2151 tone  2705  junk    0 | 87F8 8564 8799 84ED
+ 806 R4'      ob mean    -79 rms  2153 tone  2707  junk    0 | 880B 8572 87A8 84F7
+ 806 R3       ob mean    -51 rms  1703 tone  2250  junk   22 | 862F 8618 8601 85F7
+ 806 R3'      ob mean    -47 rms  1701 tone  2248  junk   33 | 8646 862E 8616 8606
+ 806 R2       ob mean    -38 rms  1071 tone  1345  junk    0 | 83F9 82AD 83C9 826F
+ 806 R2'      ob mean    -37 rms  1073 tone  1347  junk   11 | 840A 82B2 83D1 8276
+ 806 R1       ob mean    -21 rms   843 tone  1113  junk    0 | 8317 830B 8301 82FB
+ 806 R1'      ob mean    -16 rms   837 tone  1106  junk    0 | 831B 8311 8303 8300
+ 806 R0       ob mean    -19 rms     1 tone     0  junk    0 | 7FE4 7FE6 7FE4 7FE6
+ 806 R0'      ob mean    -21 rms     0 tone     0  junk    0 | 7FEB 7FEB 7FEB 7FEB
+ 806 L7       ob mean    -50 rms  1562 tone  2209  junk    1 | 77AE 7789 779A 77DD
+ 806 L7'      ob mean    -41 rms  1559 tone  2205  junk    0 | 7780 7758 776C 77BC
+ 806 L6       ob mean    -41 rms  1559 tone  2205  junk    0 | 7780 7758 776C 77BC
+ 806 L6'      ob mean    -42 rms  1561 tone  2207  junk    0 | 7780 775C 7768 77BC
+ 806 L5       ob mean    -43 rms  1562 tone  2208  junk    1 | 77BF 779A 77AB 77EE
+ 806 L5'      ob mean    -41 rms  1560 tone  2206  junk    0 | 7780 7758 776C 77B8
+ 806 L4       ob mean    -42 rms  1560 tone  2206  junk    0 | 777C 7758 7768 77BC
+ 806 L4'      ob mean    -41 rms  1560 tone  2206  junk    1 | 78E2 78C4 7895 7827
+ 806 L3       ob mean    -42 rms  1560 tone  2206  junk    0 | 7780 7758 776C 77B8
+ 806 L3'      ob mean    -43 rms  1561 tone  2207  junk    0 | 7780 7758 7768 77B8
+ 806 L2       ob mean    -43 rms  1562 tone  2208  junk    1 | 7780 7758 7768 77BC
+ 806 L2'      ob mean    -41 rms  1560 tone  2206  junk    1 | 7780 7758 7768 77BC
+ 806 L1       ob mean    -43 rms  1560 tone  2206  junk    0 | 7780 7758 776C 77BC
+ 806 L1'      ob mean    -44 rms  1561 tone  2208  junk    0 | 7780 7758 7768 77B8
+ 806 L0       ob mean    -43 rms  1561 tone  2208  junk    0 | 7780 7758 776C 77BC
+ 806 L0'      ob mean    -41 rms  1560 tone  2206  junk    3 | 77BF 779A 77AB 77F5
+ 0C atten 7   ob mean    -43 rms  1561 tone  2207  junk    0 | 7780 7758 776C 77BC
+ 0C atten 7'  ob mean    -42 rms  1561 tone  2207  junk    1 | 77BF 7797 77AB 77F1
+ 0C atten 6   ob mean    -31 rms  1102 tone  1559  junk    8 | 79FE 79E2 79F0 7A25
+ 0C atten 6'  ob mean    -31 rms  1102 tone  1558  junk    5 | 79FE 79E2 79F0 7A28
+ 0C atten 5   ob mean    -25 rms   770 tone  1089  junk    3 | 7BC8 7BB4 7BBE 7BE6
+ 0C atten 5'  ob mean    -26 rms   770 tone  1088  junk    0 | 7BC6 7BB2 7BBC 7BE4
+ 0C atten 4   ob mean    -23 rms   554 tone   783  junk    0 | 7CEE 7CE1 7CE9 7D06
+ 0C atten 4'  ob mean    -23 rms   554 tone   783  junk    0 | 7CF0 7CE1 7CE9 7D06
+ 0C atten 3   ob mean    -23 rms   391 tone   553  junk    0 | 7DCE 7DC4 7DC8 7DDF
+ 0C atten 3'  ob mean    -23 rms   391 tone   553  junk    0 | 7DCE 7DC3 7DC9 7DDF
+ 0C atten 2   ob mean    -22 rms   279 tone   395  junk    0 | 7E67 7E60 7E63 7E74
+ 0C atten 2'  ob mean    -22 rms   279 tone   395  junk    0 | 7E67 7E60 7E63 7E74
+ 0C atten 1   ob mean    -22 rms   196 tone   277  junk    0 | 7EDC 7ED5 7ED8 7EE2
+ 0C atten 1'  ob mean    -22 rms   196 tone   277  junk    0 | 7EDC 7ED5 7ED7 7EE4
+ 0C atten 0   ob mean    -21 rms     0 tone     0  junk    0 | 7FEC 7FE9 7FEB 7FEB
+ 0C atten 0'  ob mean    -21 rms     0 tone     0  junk    0 | 7FE9 7FEB 7FEB 7FEB
+ 0C ^bit7     ob mean    -22 rms   553 tone   782  junk    0 | 7CE4 7CD6 7CE0 7CFE
+ 0C ^bit7'    ob mean    -23 rms   552 tone   781  junk    0 | 7CF2 7CE3 7CEB 7D07
+ 0C ^bit6     ob mean    -39 rms  1559 tone  2204  junk    4 | 7780 775C 7770 77C0
+ 0C ^bit6'    ob mean    -41 rms  1559 tone  2204  junk    0 | 7780 775C 776C 77BC
+ 0D ^bit2     ob mean    -65 rms  2289 tone  3224  junk    2 | 7581 747D 73CF 737E
+ 0D ^bit2'    ob mean    -82 rms  2285 tone  3220  junk   35 | 7527 7380 7256 71AD
+ 0D ^bit3     ob mean    -44 rms   790 tone  1118  junk    0 | 7B85 7B71 7B7D 7BA9
+ 0D ^bit3'    ob mean    -25 rms   768 tone  1087  junk    3 | 7BCA 7BB8 7BC0 7BE8
+ 0D ^bit5     ob mean    -43 rms  1561 tone  2207  junk    0 | 7620 75F4 7684 781D
+ 0D ^bit5'    ob mean    -43 rms  1559 tone  2205  junk    0 | 7780 775C 776C 77BC
+ 0D ^bit6     ob mean    -39 rms  1559 tone  2205  junk    0 | 7780 7758 776C 77B8
+ 0D ^bit6'    ob mean    -42 rms  1560 tone  2206  junk    1 | 7780 7758 776C 77BC
+ 0D ^bit7     ob mean -26199 rms    13 tone     4  junk    0 | 199B 19B5 199B 199B
+ 0D ^bit7'    ob mean -26212 rms     4 tone     0  junk    0 | 199B 199B 199B 199B
+ 0E ^bit6     ob mean   7135 rms  1939 tone  2157  junk   17 | 87DE 87B1 87B1 880B
+ 0E ^bit6'    ob mean   4482 rms  1569 tone  2186  junk    8 | 8A2A 8A01 8A0F 8A6D
+ 0F ^bit7     ob mean   1971 rms 10703 tone  9424  junk   25 | 7B0C 7BD4 3D26 7F44
+ 0F ^bit7'    ob mean   1884 rms 10950 tone 10196  junk    6 | 222D 4780 7C67 78CC
+ 0F ^bit6     ob mean    -37 rms  1561 tone  2207  junk    0 | 7784 7760 7770 77C0
+ 0F ^bit6'    ob mean    -38 rms  1561 tone  2207  junk    4 | 7784 7760 7770 77C0
+ 0F ^bit5     ob mean    -39 rms  1559 tone  2204  junk    1 | 7780 775C 776C 77C0
+ 0F ^bit5'    ob mean    -41 rms  1558 tone  2204  junk    0 | 7780 775C 776C 77BC
+ 0F ^bit4     ob mean -27390 rms     0 tone     0  junk    0 | 1502 1502 1502 1502
+ 0F ^bit4'    ob mean -27390 rms     0 tone     0  junk    0 | 1502 1502 1502 1502
+ 0F ^bit1     ob mean    -41 rms  1559 tone  2205  junk    1 | 7780 7758 776C 77BC
+ 0F ^bit1'    ob mean    -42 rms  1558 tone  2204  junk    0 | 7780 775C 776C 77BC
+ 0F ^bit0     ob mean    -41 rms  1559 tone  2205  junk    0 | 7780 775C 7770 77BC
+ 0F ^bit0'    ob mean    -43 rms  1560 tone  2206  junk    0 | 7780 7758 776C 77B8
+ 801=0        ob mean    -23 rms     2 tone     0  junk    0 | 7FF1 7FF1 7FF1 7FF1
+ 801=0'       ob mean    -21 rms     0 tone     0  junk    0 | 7FEB 7FEB 7FEB 7FEC
+ ref again    ob mean    -50 rms  1561 tone  2208  junk    0 | 7770 7748 775C 77A8
+ ref again'   ob mean    -41 rms  1561 tone  2207  junk    0 | 77C2 779E 77AE 77F5
+after captures DFAC2 20 96 1A 16 00 10 47 02 07 41 10  801:00 802:1F 804:0E 806:EE 808:00 80A:02 F09:01 F29:01
+
+[spb]
+ srat 56220000 ssiz 8 chan 1 sour 1
+ ssiz 8 (0) chan 1 (0):  recording    DFAC2 20 96 1A 02 10 18 07 02 03 41 10  801:01 802:10 804:0C 806:EE 808:00 80A:03 F09:00 F29:01
+  status 0 meter 0 samples 16000/16000 ms 726/726, 47 ticks, spb.error 0
+  first bytes: 77 80 80 80 80 80 80 80 80 80 80 80 80 80 80 80  at 4000: 7F 7F 7F 7F 7F 7F 7F 7F 7F 7F 7F 7F 7F 7F 7F 7F
+ ssiz 16 (0) chan 1 (0):  recording    DFAC2 20 96 1A 02 10 18 07 02 03 41 10  801:01 802:10 804:0C 806:EE 808:00 80A:03 F09:00 F29:01
+  status 0 meter 0 samples 16000/16000 ms 363/363, 24 ticks, spb.error 0
+  first bytes: FF FB FF FB 00 04 FF FB 00 04 00 04 00 04 FF FB  at 4000: FF 9B FF 9B FF 9B FF 9B FF 9B FF 9B FF A3 FF 9B
+ ssiz 16 (0) chan 2 (-201):  recording    DFAC2 20 96 1A 02 10 18 07 02 03 41 10  801:01 802:10 804:0C 806:EE 808:00 80A:03 F09:00 F29:01
+  status 0 meter 0 samples 16000/16000 ms 363/363, 25 ticks, spb.error 0
+  first bytes: FF FB 00 04 00 04 00 04 FF FB 00 04 FF FB 00 04  at 4000: FF 9B FF 9B FF 9B FF A3 FF A3 FF A3 FF 9B FF 9B
+  closed       DFAC2 20 96 1A 02 10 18 07 02 07 41 10  801:01 802:10 804:0C 806:EE 808:00 80A:02 F09:01 F29:01
+final          DFAC2 20 96 1A 16 00 10 47 02 07 41 10  801:00 802:1F 804:0E 806:EE 808:00 80A:02 F09:01 F29:01
+restored

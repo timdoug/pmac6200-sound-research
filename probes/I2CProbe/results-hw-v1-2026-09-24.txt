@@ -1,0 +1,40 @@
+I2CProbe v1
+BoxFlag: 36   ASC Version: $BB   System 761
+
+[baseline] $22 DF reg [1]: 00:20 01:--(-50) 02:96 03:--(-50) 04:1A 05:--(-50) 06:16 07:--(-50) 08:00 09:--(-50) 0A:10 0B:--(-50) 0C:47 0D:02 0E:07 0F:E1 10:10
+
+[absent writes] $22 DE reg [1][55]: err, then what moved
+ 01: err -50
+  changed: none
+ 03: err -50
+  changed: none
+ 05: err -50
+  changed: none
+ 0B: err -50
+  changed: none
+ 11: err -50
+  changed: none
+ 1F: err -50
+  changed: none
+
+[multi read] $22 DF reg [n]: err, bytes
+ 0C x2: err 0: 47 FF
+ 0C x4: err -50: 00 00 00 00
+ 0A x2: err 0: 10 FF
+ 0A x3: err -50: 00 00 00
+ 0F x3: err 0: E1 FF 00
+ 00 x4: err 0: 20 FF 00 FF
+ 10 x2: err -50: 00 00
+ 02 x5: err 0: 96 FF 00 FF 00
+ after reading 0C, $22 DF [1]: err 0: FF
+ after reading 04, $22 DF [1]: err 0: FF
+
+[multi write] $22 DE 0E [2][07 F1]: err -50
+  changed: none
+[multi write] $22 DE 02 [5][11 12 13 14 15]: err -50
+  changed: 02:96->11
+[multi write] $22 DE 03 [2][16 17]: err -50
+  changed: none
+
+[after] 00:20 01:--(-50) 02:96 03:--(-50) 04:1A 05:--(-50) 06:16 07:--(-50) 08:00 09:--(-50) 0A:10 0B:--(-50) 0C:47 0D:02 0E:07 0F:E1 10:10
+[done]

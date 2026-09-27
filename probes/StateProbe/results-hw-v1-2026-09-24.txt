@@ -1,0 +1,9 @@
+StateProbe v1
+start          DFAC2 20 96 1A 16 00 10 47 02 07 41 30  801:00 802:1F 804:0E 806:EE 808:00 80A:02 F09:01 F29:01
+ section 1 at 60 ticks
+ section 2 at 1752 ticks
+ section 3 at 3462 ticks
+ section 4 at 5190 ticks
+ end at 5322 ticks, chip switched back on 0 times
+final          DFAC2 20 96 1A 16 00 10 47 02 07 41 30  801:00 802:1F 804:0E 806:EE 808:00 80A:02 F09:01 F29:01
+restored

@@ -1,0 +1,53 @@
+DFACProbe v4
+BoxFlag: 36   ASC Version: $BB   System 761
+
+[vectors] ExpandMem+$1AA = $0002F8A0  count 23
+  0:4081035C  1:408100C4  2:4080EE68  3:4081BFA8
+  4:4081BFB8  5:4081BFC8  6:40810418  7:40810248
+  8:4081048A  9:40810466 10:408102C6 11:40810120
+ 12:40810300 13:4081032A 14:4081034E 15:40810016
+ 16:4080ED86 17:4080ED86 18:4080ED86 19:4080ED86
+ 20:4080ED86 21:40810596 22:408104DC
+
+[dfac2 dump] reg: value(err), combined $25 reads, each read twice
+ 00:00(-50) 01:00(-50) 02:00(-50) 03:00(-50) 04:00(-50) 05:00(-50) 06:00(-50) 07:00(-50)
+ 08:00(-50) 09:00(-50) 0A:00(-50) 0B:00(-50) 0C:00(-50) 0D:00(-50) 0E:00(-50) 0F:00(-50)
+ 10:00(-50) 11:00(-50) 12:00(-50) 13:00(-50) 14:00(-50) 15:00(-50) 16:00(-50) 17:00(-50)
+ 18:00(-50) 19:00(-50) 1A:00(-50) 1B:00(-50) 1C:00(-50) 1D:00(-50) 1E:00(-50) 1F:00(-50)
+ rom vector 11: 2F 22 8F 22 EF 22 EF 22 0F 22 0F 22 E7 EF C7 E3 F0
+ rom-style $22 DF 0E: C7(0)
+ current-address reads: FF(0) 00(-50) FF(0)
+ known values matched 0 of 3: readback NOT trusted, write tests skipped
+
+[first playback] before / after SysBeep: 02:00/00 0C:00/00 0D:00/00 0E:00/00 0F:00/00
+
+[i2c $80] reg: value(err)
+ 00:00(-50) 01:00(-50) 02:00(-50) 03:00(-50) 04:00(-50) 05:00(-50) 06:00(-50) 07:00(-50)
+
+[i2c scan] responding addresses (8-bit write form): value
+  50:41 DE:FF
+ 2 found
+
+[dfac2 masks] reg orig: wr00 wr55 wrAA wrFF -> restored
+ skipped
+
+[input gain] vectors 21/22; get, $802, DFAC2 $02 $04 $06 $08 $0A
+ skipped (readback not trusted)
+
+[counter]
+ irq off: 20000 reads, 99219 counts, max step 62
+ irq on: 877513 reads in 60 ticks
+ delta vs N dummy $800 reads (16 trials each):
+  N= 0:  4  1  1  2  1  1  2  1  1  2  1  1  2  1  1  2
+  N= 1:  6  4  4  4  4  4  4  5  4  4  4  4  4  4  4  4
+  N= 2:  6  6  6  5  6  6  5  6  5  6  5  6  6  5  6  5
+  N= 3:  7  7  7  7  7  7  7  7  7  7  7  7  7  7  7  7
+  N= 4:  9  9  9  9  9  9  8  9  9  9  9  8  9  9  9  9
+  N= 6: 12 12 12 12 12 12 12 12 12 12 12 12 12 12 11 12
+  N= 8: 15 15 15 15 16 15 15 15 15 15 15 15 15 15 15 15
+  N=12: 22 21 21 22 22 21 21 21 22 22 21 21 21 22 22 21
+  N=16: 29 28 28 27 28 28 28 28 28 28 28 28 28 28 28 27
+
+[asc before audio] 800: BB 01 1F 00 02 00 EE 00 00 00 02 00 00 00 00 00
+ F00: 00 00 00 00 00 00 00 00 00 01 00 00 00 00 35 00
+ F20: 00 00 00 B6 00 00 00 00 00 00 02 E4 03 E4 39 00

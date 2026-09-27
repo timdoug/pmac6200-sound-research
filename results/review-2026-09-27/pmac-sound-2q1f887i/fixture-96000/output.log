@@ -1,0 +1,36 @@
+PASS: PrimeTime II version
+PASS: empty record read catches up and consumes one offset-binary sample
+PASS: byte record read consumes a whole sample
+PASS: enabling does not consume samples retroactively
+PASS: enabling does not report a nonempty FIFO as empty
+PASS: disabling accounts for elapsed playback
+PASS: disabled playback does not drain
+PASS: full FIFO wraps and sets status
+PASS: full FIFO drops writes
+PASS: byte window widens offset binary into signed 16-bit samples
+PASS: provisional partial-word policy: one sample per bus write, inactive lane zero
+PASS: last A sample precedes recording fallback to B
+PASS: record half-full raises A request with B disabled
+PASS: disabling B preserves A request
+PASS: serviced A acknowledges even while disabled B is empty
+PASS: enabling half-empty B raises B request
+PASS: disabling A preserves B request
+PASS: simultaneous record/playback requests coexist
+PASS: servicing B leaves unserviced A asserted
+PASS: disabling final source clears request
+PASS: DFAC single-byte read subaddress and write mask
+PASS: DFAC absent register NAK
+PASS: DFAC second write byte NAK
+PASS: DFAC extra write does not replace first byte
+PASS: conventional I2C client still accepts multiple data bytes
+PASS: conventional I2C repeated-start read is unchanged
+PASS: DFAC filter remains finite and bounded at host rate 96000
+PASS: filter bypass does not preserve stale audio
+PASS: DFAC response at 1000 Hz: -0.202 dB
+PASS: DFAC response at 6750 Hz: -0.500 dB
+PASS: DFAC response at 8000 Hz: -14.835 dB
+PASS: save state loads
+PASS: partial FIFOs, record pointers and pending IRQ survive save/load
+PASS: DFAC filter history survives save/load
+PMAC_SOUND_TEST_PASS
+Average speed: 44.46% (2 seconds)

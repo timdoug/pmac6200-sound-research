@@ -1,0 +1,39 @@
+# Private local preservation and third-party sources supplied separately.
+/local-only/
+/probes/ASCTester/
+/probes/*/asctester.h
+
+# Raw captures belong in separately reviewed release attachments, not Git.
+*.wav
+*.m4a
+*.aif
+*.aiff
+*.flac
+*.mp3
+*.tar
+*.gz
+*.zip
+
+# Never commit ROMs, OS media, generated applications, disks or saved states.
+*.bin
+!probes/**/data-hw-*.bin
+*.rom
+*.iso
+*.ISO
+*.dmg
+*.toast
+*.hd
+*.dsk
+*.dc42
+*.macbin
+*.sta
+*.o
+*.ad
+*.gdb
+._*
+.DS_Store
+__pycache__/
+*.pyc
+.venv/
+/results/local/
+/snap/

@@ -1,0 +1,55 @@
+XAProbe v2
+start          DFAC2 20 96 1A 16 00 10 47 02 07 41 10  801:00 802:1F 804:0E 806:EE 808:00 80A:02 F09:01 F29:01
+ F00: 00 00 00 00 00 00 00 00 00 01 00 00 00 00 2B 00
+ F20: 00 00 00 00 00 00 00 00 00 01 02 E4 02 E4 32 00
+
+[cd] no FIFO data; each input source, then the output loopback (5 = left, 6 = right)
+ cd src 0         mean    -14 rms     2 tone     0 | 7FF8 7FF6 7FF8 7FF6
+ cd src 1         mean    -21 rms     0 tone     0 | 7FEB 7FEB 7FEB 7FEB
+ cd src 2         mean    -21 rms     0 tone     0 | 7FEB 7FEB 7FEB 7FEB
+ cd src 3         mean    -18 rms     1 tone     0 | 7FF0 7FF0 7FEE 7FEE
+ cd src 4         mean    -68 rms   609 tone     4 | 807E 80C9 80D0 80F1
+ cd src 5         mean   -119 rms  1499 tone    29 | 885F 88DF 8913 88AF
+ cd src 6         mean    -78 rms  1492 tone    23 | 7EBF 7F49 7F6A 7F73
+ cd src 7         mean    -65 rms     6 tone     0 | 7FB5 7FB5 7FB5 7FB5
+ cd out 5         mean    -64 rms  1584 tone    45 | 8A9F 8A83 8A47 89FF
+ cd out 5 plth^   mean    138 rms  2347 tone    42 | 7FDB 8067 813D 821A
+ cd out 5 0C=4    mean    -76 rms  1408 tone    11 | 782F 77F1 784B 78C7
+ cd out 6         mean   -167 rms  1690 tone    17 | 79FE 7861 776A 773A
+ cd out 6 plth^   mean     36 rms  2722 tone    22 | 7AB3 7BA3 7BEB 7CCB
+ cd out 6 0C=4    mean   -134 rms  1552 tone    58 | 776A 7742 77B4 7622
+
+[cd pairs] changed/ref level over 12 alternating pairs (and the range of single pairs);
+ sources 5 = left output, 6 = right output, 4 = the CD input
+ src 5 0C atten 4  ref rms  1017  changed  1066  ratio 1047/1000 (pairs 857..4535)
+ src 5 0C atten 1  ref rms  1265  changed  1297  ratio 1025/1000 (pairs 899..1350)
+ src 5 0C atten 0  ref rms  1325  changed  1400  ratio 1056/1000 (pairs 716..3797)
+ src 5 0C ^bit7    ref rms  1648  changed  1635  ratio  992/1000 (pairs 872..1132)
+ src 5 0D bit3     ref rms  1656  changed  1781  ratio 1075/1000 (pairs 918..1208)
+ src 5 0D mute L   ref rms  1488  changed    61  ratio   41/1000 (pairs 7..70)
+ src 5 0D mute R   ref rms  1581  changed  1604  ratio 1014/1000 (pairs 965..1100)
+ src 5 0D out off  ref rms  1627  changed  1624  ratio  998/1000 (pairs 903..1114)
+ src 5 0E bit7     ref rms  1592  changed     0  ratio    0/1000 (pairs 0..0)
+ src 5 801=0       ref rms  1603  changed  1612  ratio 1005/1000 (pairs 932..1201)
+ src 6 0C atten 4  ref rms  1579  changed  1594  ratio 1009/1000 (pairs 937..1096)
+ src 6 0C atten 1  ref rms   641  changed   565  ratio  882/1000 (pairs 429..1327)
+ src 6 0C atten 0  ref rms   405  changed   397  ratio  980/1000 (pairs 642..1751)
+ src 6 0C ^bit7    ref rms   416  changed   401  ratio  963/1000 (pairs 679..1317)
+ src 6 0D bit3     ref rms  1317  changed  1482  ratio 1125/1000 (pairs 698..2956)
+ src 6 0D mute L   ref rms  1190  changed  1059  ratio  890/1000 (pairs 278..1238)
+ src 6 0D mute R   ref rms  1665  changed     8  ratio    5/1000 (pairs 2..9)
+ src 6 0D out off  ref rms  1647  changed  1537  ratio  933/1000 (pairs 465..1120)
+ src 6 0E bit7     ref rms  1612  changed     0  ratio    0/1000 (pairs 0..0)
+ src 6 801=0       ref rms  1620  changed  1615  ratio  997/1000 (pairs 860..1097)
+ src 4 0C atten 4  ref rms   631  changed   635  ratio 1006/1000 (pairs 949..1554)
+ src 4 0C atten 1  ref rms   655  changed   662  ratio 1009/1000 (pairs 912..1111)
+ src 4 0C atten 0  ref rms   664  changed   681  ratio 1025/1000 (pairs 928..1216)
+ src 4 0C ^bit7    ref rms   663  changed   652  ratio  983/1000 (pairs 891..1105)
+ src 4 0D bit3     ref rms   666  changed   662  ratio  993/1000 (pairs 908..1099)
+ src 4 0D mute L   ref rms   669  changed   677  ratio 1011/1000 (pairs 974..1071)
+ src 4 0D mute R   ref rms   205  changed   165  ratio  806/1000 (pairs 375..1213)
+ src 4 0D out off  ref rms   172  changed   134  ratio  779/1000 (pairs 351..1293)
+ src 4 0E bit7     ref rms   174  changed     0  ratio    0/1000 (pairs 0..0)
+ src 4 801=0       ref rms    51  changed    67  ratio 1296/1000 (pairs 0..356000)
+final          DFAC2 20 96 1A 16 00 10 47 02 07 41 10  801:00 802:1F 804:0E 806:EE 808:00 80A:02 F09:01 F29:01
+restored

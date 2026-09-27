@@ -1,0 +1,256 @@
+RecProbe v2
+start          DFAC2 20 96 1A 16 00 10 47 02 07 41 10  801:00 802:1F 804:0E 806:EE 808:00 80A:02 F09:01 F29:01
+ 800: BB 00 1F 00 0E 00 EE 00 00 00 02 00 00 00 00 00
+ F00: 00 00 00 00 00 00 00 00 00 01 00 00 00 00 3A 00
+ F20: 00 00 00 00 00 00 00 00 00 01 02 E4 02 E4 05 00
+
+[802] write -> read: 00->00 01->01 05->05 0A->0A 10->10 15->15 1A->1A 1F->1F 20->00 80->00 FF->1F  restored 1F->1F
+[80A] write -> read: 00->02 01->03 02->02 03->03 00->02 FF->03 00->02  restored 02->02
+
+[raw] FIFO A in record mode, interrupts on, FIFO interrupts off, polling
+
+-- $801=1 $80A=1 --
+ after reset:  A wr 000 rd 000  B wr 000 rd 000  804 0E
+ 108 samples in 70ms, 400us apart or on a status change (t us: A wr rd  B wr rd  804)
+     110: 002 000  000 000  0C
+     523: 014 000  000 000  0C
+     923: 026 000  000 000  0C
+    1372: 038 000  000 000  0C
+    1822: 04C 000  000 000  0C
+    2271: 060 000  000 000  0C
+    2720: 074 000  000 000  0C
+    3170: 088 000  000 000  0C
+    3619: 09C 000  000 000  0C
+    5418: 0EC 000  000 000  0C
+    7217: 13A 000  000 000  0C
+    9021: 18A 000  000 000  0C
+   10816: 1DA 000  000 000  0C
+   12592: 228 000  000 000  0C
+   14342: 274 000  000 000  0C
+   16146: 2C4 000  000 000  0C
+   17943: 314 000  000 000  0C
+   19691: 360 000  000 000  0C
+   21440: 3AE 000  000 000  0C
+   23242: 3FE 000  000 000  0C
+   23305: 400 000  000 000  0D  <- 804
+   24605: 43A 000  000 000  0D
+   26562: 490 000  000 000  0D
+   28297: 4DC 000  000 000  0D
+   30046: 52A 000  000 000  0D
+   31850: 57A 000  000 000  0D
+   33648: 5C8 000  000 000  0D
+   35326: 612 000  000 000  0D
+   37021: 65E 000  000 000  0D
+   38723: 6A8 000  000 000  0D
+   40421: 6F4 000  000 000  0D
+   42116: 73E 000  000 000  0D
+   43811: 788 000  000 000  0D
+   45522: 7D4 000  000 000  0D
+   46501: 000 000  000 000  0F  <- 804
+ A write pointer: 1964 steps in 44560 us -> 44075 Hz
+ before reads: A wr 000 rd 000 804 0F
+ word reads $1000 (value, A rd after): 00E9/002 7FE9/004 7FE9/006 7FE9/008 7FE9/00A 7FE9/00C
+ byte reads $000: 7F/00E 7F/010 7F/012 7F/014 7F/016 7F/018
+ long reads $1000: 7FE97FE9/01C 7FE97FE9/020 7FE97FE9/024
+ word reads $1800 (value, B rd after): 7FE9/000 7FE9/000 7FE9/000
+ 802 while recording: 1F 1F 1F 1F 1F 1F 1F 1F
+ $80A=0: A wr 02A -> 02A over 10ms, rd 02A, 804 0F
+
+-- $801=1 $80A=3 --
+ after reset:  A wr 000 rd 000  B wr 000 rd 000  804 0E
+ 111 samples in 70ms, 400us apart or on a status change (t us: A wr rd  B wr rd  804)
+     136: 002 000  000 000  0C
+     574: 014 000  000 000  0C
+    1000: 028 000  000 000  0C
+    1424: 03A 000  000 000  0C
+    1852: 04E 000  000 000  0C
+    2276: 060 000  000 000  0C
+    2699: 072 000  000 000  0C
+    3123: 086 000  000 000  0C
+    3547: 098 000  000 000  0C
+    5242: 0E2 000  000 000  0C
+    6938: 12E 000  000 000  0C
+    8637: 178 000  000 000  0C
+   10336: 1C4 000  000 000  0C
+   12030: 20E 000  000 000  0C
+   13733: 25A 000  000 000  0C
+   15619: 2AC 000  000 000  0C
+   17461: 2FE 000  000 000  0C
+   19157: 348 000  000 000  0C
+   20856: 394 000  000 000  0C
+   22559: 3DE 000  000 000  0C
+   23348: 402 000  000 000  0D  <- 804
+   24194: 426 000  000 000  0D
+   25889: 472 000  000 000  0D
+   27588: 4BC 000  000 000  0D
+   29287: 508 000  000 000  0D
+   30984: 552 000  000 000  0D
+   32677: 59C 000  000 000  0D
+   34445: 5EA 000  000 000  0D
+   36144: 636 000  000 000  0D
+   37844: 680 000  000 000  0D
+   39538: 6CC 000  000 000  0D
+   41233: 716 000  000 000  0D
+   42932: 760 000  000 000  0D
+   44629: 7AC 000  000 000  0D
+   46326: 7F6 000  000 000  0D
+   46514: 7FE 000  000 000  0F  <- 804
+   47094: 000 000  000 000  0F
+ A write pointer: 1980 steps in 44917 us -> 44081 Hz
+ before reads: A wr 000 rd 000 804 0F
+ word reads $1000 (value, A rd after): 7FE9/002 7FE9/004 7FE9/006 7FE9/008 7FE9/00A 7FE9/00C
+ byte reads $000: 7F/00E 7F/010 7F/012 7F/014 7F/016 7F/018
+ long reads $1000: 7FE97FE9/01C 7FE97FE9/020 7FE97FE9/024
+ word reads $1800 (value, B rd after): 7FE9/000 7FE9/000 7FE9/000
+ 802 while recording: 1F 1F 1F 1F 1F 1F 1F 1F
+ $80A=0: A wr 02A -> 02A over 10ms, rd 02A, 804 0F
+
+-- $801=1 $80A=2 --
+ after reset:  A wr 000 rd 000  B wr 000 rd 000  804 0E
+ 1 samples in 70ms, 400us apart or on a status change (t us: A wr rd  B wr rd  804)
+      69: 000 000  000 000  0E
+ before reads: A wr 000 rd 000 804 0E
+ word reads $1000 (value, A rd after): 7FE9/000 E9E9/000 E9E9/000 E9E9/000 E9E9/000 E9E9/000
+ byte reads $000: E9/000 E9/000 E9/000 E9/000 E9/000 E9/000
+ long reads $1000: E9E9E9E9/000 E9E9E9E9/000 E9E9E9E9/000
+ word reads $1800 (value, B rd after): E9E9/000 E9E9/000 E9E9/000
+ 802 while recording: 1F 1F 1F 1F 1F 1F 1F 1F
+ $80A=0: A wr 000 -> 000 over 10ms, rd 000, 804 0E
+
+-- $801=0 $80A=1 --
+ after reset:  A wr 000 rd 000  B wr 000 rd 000  804 0E
+ 108 samples in 70ms, 400us apart or on a status change (t us: A wr rd  B wr rd  804)
+     104: 002 000  000 000  0C
+     544: 014 000  000 000  0C
+     967: 028 000  000 000  0C
+    1391: 03A 000  000 000  0C
+    1819: 04E 000  000 000  0C
+    2243: 060 000  000 000  0C
+    2667: 072 000  000 000  0C
+    3095: 086 000  000 000  0C
+    3518: 098 000  000 000  0C
+    5217: 0E2 000  000 000  0C
+    6912: 12E 000  000 000  0C
+    8615: 178 000  000 000  0C
+   10351: 1C6 000  000 000  0C
+   12104: 212 000  000 000  0C
+   13828: 25E 000  000 000  0C
+   15555: 2AA 000  000 000  0C
+   17277: 2F6 000  000 000  0C
+   19005: 344 000  000 000  0C
+   20729: 390 000  000 000  0C
+   22453: 3DC 000  000 000  0C
+   23314: 402 000  000 000  0D  <- 804
+   24180: 428 000  000 000  0D
+   25964: 468 000  000 000  0D
+   27765: 4C6 000  000 000  0D
+   29558: 514 000  000 000  0D
+   31358: 564 000  000 000  0D
+   33107: 5B0 000  000 000  0D
+   34856: 5FE 000  000 000  0D
+   36656: 64E 000  000 000  0D
+   38456: 69C 000  000 000  0D
+   40255: 6EC 000  000 000  0D
+   42005: 739 000  000 000  0D
+   43918: 78E 000  000 000  0D
+   45644: 7DA 000  000 000  0D
+   46489: 7FE 000  000 000  0F  <- 804
+   46936: 000 000  000 000  0F
+ A write pointer: 1974 steps in 44667 us -> 44193 Hz
+ before reads: A wr 000 rd 000 804 0F
+ word reads $1000 (value, A rd after): E9E9/002 7FE9/004 7FE9/006 7FE9/008 7FE9/00A 7FE9/00C
+ byte reads $000: 7F/00E 7F/010 7F/012 7F/014 7F/016 7F/018
+ long reads $1000: 7FE97FE9/01C 7FE97FE9/020 7FE97FE9/024
+ word reads $1800 (value, B rd after): 7FE9/000 7FE9/000 7FE9/000
+ 802 while recording: 1F 1F 1F 1F 1F 1F 1F 1F
+ $80A=0: A wr 02A -> 02A over 10ms, rd 02A, 804 0F
+
+-- $801=1 $80A=0 --
+ after reset:  A wr 000 rd 000  B wr 000 rd 000  804 0E
+ 1 samples in 70ms, 400us apart or on a status change (t us: A wr rd  B wr rd  804)
+      72: 000 000  000 000  0E
+ before reads: A wr 000 rd 000 804 0E
+ word reads $1000 (value, A rd after): 7FE9/000 E9E9/000 E9E9/000 E9E9/000 E9E9/000 E9E9/000
+ byte reads $000: E9/000 E9/000 E9/000 E9/000 E9/000 E9/000
+ long reads $1000: E9E9E9E9/000 E9E9E9E9/000 E9E9E9E9/000
+ word reads $1800 (value, B rd after): E9E9/000 E97F/000 7FE9/000
+ 802 while recording: 1F 1F 1F 1F 1F 1F 1F 1F
+ $80A=0: A wr 000 -> 000 over 10ms, rd 000, 804 0E
+
+[capture] 2016 words after 1024 settling, 16-bit window, $80A=1; tone = 612.5Hz in FIFO B at 1/4 scale
+ silence      ob mono: mean    141 rms  2478 tone    23 | even:    182  2685    69 | odd:    101  2250    43 | 7F7F 7F7F 7FE9 7F7F
+ tone         ob mono: mean    -23 rms     0 tone     0 | even:    -23     0     0 | odd:    -23     0     0 | 7FE9 7FE9 7FE9 7FE9
+ src 0        ob mono: mean    294 rms  3232 tone    52 | even:    306  3266   138 | odd:    282  3198    96 | 7F7F 7F7F 7F7F 7F7F
+ src 1        ob mono: mean    125 rms  2291 tone    79 | even:    152  2448   156 | odd:     97  2122   130 | 7FEB 7FEB 7FEB 7FEB
+ src 2        ob mono: mean    -21 rms     0 tone     0 | even:    -21     0     0 | odd:    -21     0     0 | 7FEB 7FEB 7FEB 7FEB
+ src 3        ob mono: mean    -18 rms     1 tone     0 | even:    -18     1     0 | odd:    -18     1     0 | 7FF0 7FF0 7FF0 7FF0
+ src 4        ob mono: mean    216 rms  2395 tone   104 | even:    201  2312    17 | odd:    231  2475    42 | 7F7F 7F7F 7F7F 7F7F
+ src 5        ob mono: mean   -156 rms  2061 tone  1028 | even:   -140  2192    96 | odd:   -171  1921    85 | 7F51 7F45 7F69 7F7F
+ src 6        ob mono: mean     32 rms  2166 tone   709 | even:     26  2380    89 | odd:     37  1928   107 | 7F4C 7F28 7F3C 7F88
+ src 7        ob mono: mean    -32 rms     3 tone     0 | even:    -32     3     0 | odd:    -32     3     0 | 7FDA 7FDA 7FDA 7FDA
+ mode 1       ob mono: mean   -155 rms    95 tone     2 | even:   -154    96     3 | odd:   -156    93     4 | 809A 809A 809A 809A
+ mode 1 sil   ob mono: mean    -50 rms   666 tone    37 | even:    -55   634    36 | odd:    -46   696    47 | 7F9B 7F9B 7F9B 7F9B
+ mode 2       ob mono: mean    -14 rms   157 tone     4 | even:    -15   156     3 | odd:    -14   158     2 | 7F35 7F35 7F35 7F35
+ mode 2 sil   ob mono: mean     -3 rms  1225 tone    72 | even:     24  1391   119 | odd:    -31  1032    55 | 7F7F 7F7F 7F7F 7F7F
+ mode 3       ob mono: mean    -93 rms     6 tone     3 | even:    -93     6     0 | odd:    -93     6     0 | 7FAB 7FAB 7FAB 7FAB
+ mode 3 sil   ob mono: mean   4784 rms  3341 tone    20 | even:   4810  3347    59 | odd:   4757  3336    44 | 7F7F 7F7F 7F7F 7F7F
+ mode 4       ob mono: mean     88 rms  2049 tone   128 | even:     90  2067   292 | odd:     87  2031   237 | 7FD1 7FD1 7FD1 7F7F
+ mode 4 sil   ob mono: mean    118 rms  2076 tone    12 | even:    117  2071   169 | odd:    118  2081   169 | 7F7F 7F7F 7F7F 7FCD
+
+[sweeps] through source 5 (tone 1028)
+ ref          ob mono: mean   -337 rms  2063 tone   591 | even:   -317  1732    37 | odd:   -357  2347   120 | 8080 8080 8080 8080
+ 806 R7       ob mono: mean   -118 rms  1529 tone  1944 | even:   -111  1517    39 | odd:   -124  1542    29 | 7FC4 7F64 7F3C 7F50
+ 806 R6       ob mono: mean     16 rms  2272 tone   506 | even:    113  2258   157 | odd:    -79  2281   127 | 8888 8888 8888 8888
+ 806 R5       ob mono: mean   -102 rms  1534 tone  1963 | even:    -98  1522    32 | odd:   -106  1546    23 | 7FCC 7F6C 7F44 7F58
+ 806 R4       ob mono: mean   -103 rms  1526 tone  1953 | even:    -98  1512    40 | odd:   -109  1540    26 | 7FC8 7F6C 7F44 7F58
+ 806 R3       ob mono: mean   -106 rms  1531 tone  1959 | even:   -103  1516    39 | odd:   -108  1546    26 | 7FCC 7F68 7F40 7FC1
+ 806 R2       ob mono: mean   -105 rms  1521 tone  1944 | even:   -100  1505    31 | odd:   -109  1536    25 | 7FCC 7F6C 7F44 7F58
+ 806 R1       ob mono: mean   -107 rms  1528 tone  1954 | even:   -104  1515    27 | odd:   -110  1542    22 | 7FCC 7F6C 7F44 7F58
+ 806 R0       ob mono: mean   -107 rms  1527 tone  1954 | even:   -103  1510    39 | odd:   -110  1543    21 | 7FCC 7F6C 7F44 7F58
+ 806 L7       ob mono: mean   -234 rms  2067 tone   882 | even:   -263  2275    71 | odd:   -206  1835   132 | 8888 8888 8888 8888
+ 806 L6       ob mono: mean   -156 rms  3942 tone  4798 | even:    -69  3869    21 | odd:   -243  4012    37 | 8045 821C 8599 8697
+ 806 L5       ob mono: mean     78 rms  3240 tone  3847 | even:     24  3276    87 | odd:    132  3203    67 | 7F3C 7BBD 7895 7E6D
+ 806 L4       ob mono: mean    120 rms  2087 tone  2169 | even:    117  2091   111 | odd:    123  2084    81 | 7F10 7F80 7CD2 7AAF
+ 806 L3       ob mono: mean    -53 rms  1696 tone  1996 | even:    -79  1697    24 | odd:    -26  1695    11 | 7F76 7F3A 801E 810E
+ 806 L2       ob mono: mean   -323 rms  2393 tone   376 | even:   -299  2071    96 | odd:   -347  2676    27 | 7878 7878 7878 7878
+ 806 L1       ob mono: mean    -14 rms   856 tone  1025 | even:    -27   854    27 | odd:     -1   858    21 | 7F46 7F21 7E1B 7C0C
+ 806 L0       ob mono: mean    111 rms  1209 tone   363 | even:     69  1610    60 | odd:    154   573    22 | 8383 8383 8383 83DF
+ 0C atten 7   ob mono: mean   -116 rms  2307 tone   712 | even:   -111  2338   124 | odd:   -120  2275    38 | 7F7F 7FBC 7F7F 7F7F
+ 0C atten 6   ob mono: mean   -121 rms  1998 tone   549 | even:    -73  1891    61 | odd:   -169  2098   171 | 7F1A 7FE1 7FC7 7FB2
+ 0C atten 5   ob mono: mean    -38 rms   800 tone  1018 | even:    -29   819    10 | odd:    -48   781     5 | 7F52 7F38 7F8E 7FCE
+ 0C atten 4   ob mono: mean     73 rms  2234 tone   174 | even:    123  2078    81 | odd:     24  2378   183 | 8484 8484 8484 8484
+ 0C atten 3   ob mono: mean    -32 rms   420 tone   511 | even:    -26   423    13 | odd:    -37   417    11 | 7FEB 7FCE 7FC3 7FC9
+ 0C atten 2   ob mono: mean      1 rms  1754 tone   224 | even:     23  1784    51 | odd:    -20  1724    95 | 7D7D 7D72 7D7D 7D7D
+ 0C atten 1   ob mono: mean    -12 rms   223 tone   244 | even:    -22   230     2 | odd:     -2   215     1 | 7FEB 7FDC 7FD8 7FDA
+ 0C atten 0   ob mono: mean     16 rms  1930 tone    73 | even:      6  1601    83 | odd:     26  2210    53 | 8080 8080 8080 8080
+ 0C ^bit7     ob mono: mean    182 rms  2817 tone   123 | even:    237  3072   183 | odd:    127  2535   255 | 7F7F 7FEB EB7F 7F7F
+ 0C ^bit6     ob mono: mean  -3158 rms 11595 tone  1344 | even:  -4565 10856   221 | odd:  -1752 12128   281 | 8686 8686 8686 8686
+ 0C ^bit5     ob mono: mean    -79 rms  1534 tone  1962 | even:    -72  1531    19 | odd:    -85  1536    10 | 7FE4 7F80 7F58 7F6C
+ 0C ^bit4     ob mono: mean   -108 rms  1524 tone  1950 | even:   -104  1510    36 | odd:   -112  1538    24 | 7FCC 7F70 7F44 7F5C
+ 0D ^bit2     ob mono: mean    -83 rms  2378 tone  2665 | even:    -88  2378   117 | odd:    -78  2377   119 | 79E4 798F 7991 79F0
+ 0D ^bit3     ob mono: mean    -63 rms   816 tone  1037 | even:    -62   821    15 | odd:    -64   810    13 | 7FB5 7F7D 7F69 7F75
+ 0D ^bit4     ob mono: mean   -107 rms  1526 tone  1952 | even:   -101  1510    35 | odd:   -114  1542    20 | 7FCC 7F6C 7F44 7F58
+ 0D ^bit5     ob mono: mean   -179 rms  2008 tone   892 | even:   -157  2173   189 | odd:   -200  1827    32 | 8888 8888 8888 8888
+ 0D ^bit6     ob mono: mean    -99 rms  1285 tone   924 | even:   -111  1077    27 | odd:    -87  1464    51 | 7E7E 7E7E 7E7E 7E7E
+ 0D ^bit7     ob mono: mean    -95 rms  1554 tone  1990 | even:    -95  1557    37 | odd:    -94  1551    23 | 7FB0 7F4C 7F28 7F3C
+ 0E ^bit7     ob mono: mean  32767 rms     0 tone     0 | even:  32767     0     0 | odd:  32767     0     0 | FFFF FFFF FFFF FFFF
+ 0E ^bit6     ob mono: mean   -356 rms  2249 tone   456 | even:   -305  2009   113 | odd:   -407  2465    83 | 7FC0 7F60 7F38 7F4C
+ 0F ^bit7     ob mono: mean    833 rms 11986 tone  9105 | even:   1486 12037   544 | odd:    179 11899    55 | 853E 8684 8702 8702
+ 0F ^bit0     ob mono: mean   -106 rms  1538 tone  1964 | even:    -98  1526    11 | odd:   -114  1550    27 | 7FCC 7F68 7F40 7F54
+ ref again    ob mono: mean   -180 rms  2022 tone   894 | even:   -159  2201   192 | odd:   -200  1825    31 | 8888 8888 8888 8888
+after captures DFAC2 20 96 1A 16 00 10 47 02 07 41 10  801:00 802:1F 804:0E 806:EE 808:00 80A:02 F09:01 F29:01
+
+[spb]
+ srat 56220000 ssiz 8 chan 1 sour 1
+ ssiz 8 (0) chan 1 (0):  recording    DFAC2 20 96 1A 02 10 18 07 02 03 41 10  801:01 802:10 804:0C 806:EE 808:00 80A:03 F09:00 F29:01
+  status 0 meter 0 samples 16000/16000 ms 726/726, 47 ticks, spb.error 0
+  first bytes: 83 80 80 80 80 80 80 80 80 80 80 80 80 80 80 80  at 4000: 7F 7F 7F 7F 7F 7F 7F 7F 7F 7F 7F 7F 7F 7F 7F 7F
+ ssiz 16 (0) chan 1 (0):  recording    DFAC2 20 96 1A 02 10 18 07 02 03 41 10  801:01 802:10 804:0C 806:EE 808:00 80A:03 F09:00 F29:01
+  status 0 meter 0 samples 16000/16000 ms 363/363, 25 ticks, spb.error 0
+  first bytes: FF 04 00 04 00 04 00 04 FF FB FF FB 00 04 00 04  at 4000: FF 9B FF 9B FF A3 FF 9B FF 9B FF 9B FF 9B FF A3
+ ssiz 16 (0) chan 2 (-201):  recording    DFAC2 20 96 1A 02 10 18 07 02 03 41 10  801:01 802:10 804:0C 806:EE 808:00 80A:03 F09:00 F29:01
+  status 0 meter 0 samples 16000/16000 ms 363/363, 24 ticks, spb.error 0
+  first bytes: FF 04 00 04 FF FB 00 04 FF FB 00 04 FF FB FF FB  at 4000: FF 9B FF 9B FF 9B FF A3 FF 9B FF 9B FF 9B FF 9B
+  closed       DFAC2 20 96 1A 02 10 18 07 02 07 41 10  801:01 802:10 804:0C 806:EE 808:00 80A:02 F09:01 F29:01
+final          DFAC2 20 96 1A 16 00 10 47 02 07 41 10  801:00 802:1F 804:0E 806:EE 808:00 80A:02 F09:01 F29:01
+restored

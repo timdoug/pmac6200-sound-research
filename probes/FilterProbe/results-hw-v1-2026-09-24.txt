@@ -1,0 +1,37 @@
+FilterProbe v1
+start          DFAC2 20 96 1A 16 00 10 47 02 07 41 30  801:00 802:1F 804:0E 806:EE 808:00 80A:02 F09:01 F29:01
+ section 1 at 60 ticks
+ setting 0 = defaults at 108
+ setting 1 = 80A=00 at 246
+ setting 2 = 80A=02 at 384
+ setting 3 = 807=01 at 522
+ setting 4 = 807=02 at 660
+ setting 5 = 807=03 at 798
+ setting 6 = 802=00 at 936
+ setting 7 = 802=1F at 1074
+ setting 8 = F08=80 at 1212
+ setting 9 = 0F^b7 at 1350
+ setting 10 = 0F^b6 at 1490
+ setting 11 = 0F^b5 at 1630
+ setting 12 = 0F^b4 at 1770
+ setting 13 = 0F^b1 at 1910
+ setting 14 = 0F^b0 at 2050
+ setting 15 = 0C^b6 at 2190
+ setting 16 = 0C^b5 at 2330
+ setting 17 = 0C^b4 at 2470
+ setting 18 = 0D^b4 at 2610
+ setting 19 = 0D^b5 at 2750
+ setting 20 = 0E^b6 at 2890
+ setting 21 = 02^b7 at 3030
+ setting 22 = mode 1 at 3174
+ setting 23 = mode 2 at 3318
+ setting 24 = mode 3 at 3462
+ setting 25 = mode 4 at 3606
+ setting 26 = defaults again at 3747
+ section 2 at 3947 ticks
+ recording from 4211
+ while recording: 804 03, A rec wr 000 rd 000
+ section 3 at 4469 ticks
+ end at 4583 ticks, chip switched back on 0 times
+final          DFAC2 20 96 1A 16 00 10 47 02 07 41 30  801:00 802:1F 804:0E 806:EE 808:00 80A:02 F09:01 F29:01
+restored

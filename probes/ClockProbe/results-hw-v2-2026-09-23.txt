@@ -1,0 +1,23 @@
+ClockProbe v2
+200 blocks: 323783 counter steps (max step 63, steps >= 32: 210), 10176 samples, 180773 VIA ticks
+  steps per sample   31.81829
+  steps per VIA tick 1.79110
+  samples per VIA tick x100000 = 5629 (22050/783360 = 2814)
+  counter Hz vs sample clock 701593, vs VIA 1403078
+  filtered: kept 175 of 200 blocks (median 1.8013 steps/tick, min 15481 max 18805)
+  filtered: steps per sample 32.00056, counter Hz vs sample clock 705612, vs VIA 1411079
+800 blocks: 1295039 counter steps (max step 63, steps >= 32: 835), 40746 samples, 723778 VIA ticks
+  steps per sample   31.78321
+  steps per VIA tick 1.78927
+  samples per VIA tick x100000 = 5629 (22050/783360 = 2814)
+  counter Hz vs sample clock 700819, vs VIA 1401647
+  filtered: kept 693 of 800 blocks (median 1.8013 steps/tick, min 15481 max 18738)
+  filtered: steps per sample 32.00025, counter Hz vs sample clock 705605, vs VIA 1411155
+800 blocks: 1295303 counter steps (max step 63, steps >= 32: 840), 40744 samples, 723748 VIA ticks
+  steps per sample   31.79125
+  steps per VIA tick 1.78971
+  samples per VIA tick x100000 = 5629 (22050/783360 = 2814)
+  counter Hz vs sample clock 700997, vs VIA 1401991
+  filtered: kept 683 of 800 blocks (median 1.8013 steps/tick, min 15536 max 18750)
+  filtered: steps per sample 32.00351, counter Hz vs sample clock 705677, vs VIA 1411127
+restored

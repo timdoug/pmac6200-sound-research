@@ -1,0 +1,166 @@
+-- Drives pmac6200 for the ASCTester run.
+--
+-- Takes a periodic snapshot to /tmp/pmac6200.png so progress can be watched
+-- from outside, and polls /tmp/pmac6200-cmd for one command per line:
+--
+--   snap                 take a snapshot right now
+--   m <dx> <dy> <steps>  inject relative mouse motion, <steps> reports of dx,dy
+--   down / up / click / dblclick
+--   key <text>           post <text> through the natural keyboard
+--   exit                 exit MAME cleanly (finalises -wavwrite)
+--
+-- The command file is truncated once its contents have been consumed.
+
+local SNAP = "/tmp/pmac6200.png"
+local CMD = "/tmp/pmac6200-cmd"
+
+local frames = 0
+local screen = nil
+local btn, mx, my = nil, nil, nil
+local queue = {}
+local holdoff = 0
+
+local function first_field(port)
+	for name, field in pairs(port.fields) do
+		return field, name
+	end
+	return nil, nil
+end
+
+local function resolve()
+	for tag, scr in pairs(manager.machine.screens) do
+		screen = scr
+		print("asctest-drive: screen " .. tag)
+		break
+	end
+	for tag, port in pairs(manager.machine.ioport.ports) do
+		if tag:find("BUTTONS$") then
+			btn = port.fields["Mouse Button 1"]
+			print("asctest-drive: buttons " .. tag .. " -> " .. tostring(btn))
+		elseif tag:find("MOUSEX$") then
+			local f, n = first_field(port)
+			mx = f
+			print("asctest-drive: mousex " .. tag .. " field '" .. tostring(n) .. "'")
+		elseif tag:find("MOUSEY$") then
+			local f, n = first_field(port)
+			my = f
+			print("asctest-drive: mousey " .. tag .. " field '" .. tostring(n) .. "'")
+		end
+	end
+end
+
+local function snapshot()
+	if screen ~= nil then
+		-- the snapshot call will not overwrite, so clear the previous one first
+		os.remove(SNAP)
+		local ok, err = pcall(function () screen:snapshot(SNAP) end)
+		if not ok then print("snapshot failed: " .. tostring(err)) end
+	end
+end
+
+local function step()
+	if #queue == 0 then return end
+	if holdoff > 0 then holdoff = holdoff - 1 return end
+
+	local c = table.remove(queue, 1)
+
+	if c.op == "snap" then
+		snapshot()
+	elseif c.op == "move" then
+		if mx ~= nil then mx:set_value(c.dx) end
+		if my ~= nil then my:set_value(c.dy) end
+		c.n = c.n - 1
+		if c.n > 0 then table.insert(queue, 1, c) end
+	elseif c.op == "down" then
+		if btn ~= nil then btn:set_value(1) end
+	elseif c.op == "up" then
+		if btn ~= nil then btn:set_value(0) end
+	elseif c.op == "bit" then
+		for t, port in pairs(manager.machine.ioport.ports) do
+			if t:find(c.tag .. "$") then
+				for _, f in pairs(port.fields) do
+					if f.mask == c.mask then
+						f:set_value(c.val)
+					end
+				end
+			end
+		end
+	elseif c.op == "wait" then
+		holdoff = c.n
+	elseif c.op == "exit" then
+		-- a clean exit, unlike killing the process, finalises -wavwrite's header
+		manager.machine:exit()
+	end
+end
+
+local function enqueue(line)
+	local op, rest = line:match("^(%S+)%s*(.*)$")
+	if op == nil then return end
+
+	if op == "snap" then
+		table.insert(queue, {op = "snap"})
+	elseif op == "m" then
+		local dx, dy, n = rest:match("^(-?%d+)%s+(-?%d+)%s+(%d+)$")
+		if dx ~= nil then
+			table.insert(queue, {op = "move", dx = tonumber(dx), dy = tonumber(dy), n = tonumber(n)})
+		end
+	elseif op == "down" then
+		table.insert(queue, {op = "down"})
+	elseif op == "up" then
+		table.insert(queue, {op = "up"})
+	elseif op == "click" then
+		table.insert(queue, {op = "down"})
+		table.insert(queue, {op = "wait", n = 6})
+		table.insert(queue, {op = "up"})
+	elseif op == "dblclick" then
+		table.insert(queue, {op = "down"})
+		table.insert(queue, {op = "wait", n = 4})
+		table.insert(queue, {op = "up"})
+		table.insert(queue, {op = "wait", n = 4})
+		table.insert(queue, {op = "down"})
+		table.insert(queue, {op = "wait", n = 4})
+		table.insert(queue, {op = "up"})
+	elseif op == "key" then
+		emu.keypost(rest)
+	elseif op == "bit" then
+		-- bit <port tag suffix> <mask> <0|1>: drive a raw keyboard bit, which is how we get
+		-- modifiers; the natural keyboard cannot post Command-key chords.  This has to go
+		-- through the queue like everything else, otherwise a down/up pair issued in one
+		-- command file would both apply in the same instant and never be seen by the guest.
+		local tag, mask, val = rest:match("^(%S+)%s+(%d+)%s+([01])$")
+		if tag ~= nil then
+			table.insert(queue, {op = "bit", tag = tag, mask = tonumber(mask), val = tonumber(val)})
+		end
+	elseif op == "wait" then
+		table.insert(queue, {op = "wait", n = tonumber(rest) or 60})
+	elseif op == "exit" then
+		table.insert(queue, {op = "exit"})
+	end
+end
+
+local function poll()
+	local f = io.open(CMD, "r")
+	if f == nil then return end
+	local body = f:read("*a")
+	f:close()
+	if body == nil or body == "" then return end
+	local w = io.open(CMD, "w")
+	if w ~= nil then w:close() end
+	for line in body:gmatch("[^\r\n]+") do
+		enqueue(line)
+	end
+end
+
+-- NB: the subscription returned here unsubscribes when it is garbage collected,
+-- so it has to be kept referenced for the notifier to keep firing.
+subscription = emu.add_machine_frame_notifier(function ()
+	frames = frames + 1
+
+	if frames == 2 then resolve() end
+	if frames < 2 then return end
+
+	if (frames % 300) == 0 then snapshot() end
+	if (frames % 10) == 0 then poll() end
+
+	step()
+end)

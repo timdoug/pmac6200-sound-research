@@ -1,0 +1,9 @@
+RampProbe v1
+start          DFAC2 20 96 1A 16 00 10 47 02 07 41 30  801:00 802:1F 804:0E 806:EE 808:00 80A:02 F09:01 F29:01
+ section 1 at 60 ticks
+ section 2 at 1512 ticks
+ section 3 at 2982 ticks
+ section 4 at 4470 ticks
+ end at 4602 ticks, chip switched back on 0 times
+final          DFAC2 20 96 1A 16 00 10 47 02 07 41 30  801:00 802:1F 804:0E 806:EE 808:00 80A:02 F09:01 F29:01
+restored

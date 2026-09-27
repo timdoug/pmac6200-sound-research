@@ -1,0 +1,38 @@
+#!/bin/bash
+# Record the pmac6200 boot chime to a WAV for A/B comparison.
+#
+# Restores the full machine state before every run -- disk, PRAM and cfg --
+# so the only variable between runs is the build under test.  PRAM and cfg go
+# to scratch directories so the interactive setup in nvram/ and cfg/ is left
+# alone.
+#
+# Usage: ./chime-ab.sh <label> [emulated-seconds]
+set -eu
+
+LABEL="${1:?need a label, e.g. before/after}"
+SECS="${2:-25}"
+
+BASE=disks/pmac6200-ata.BASELINE.hd
+DISK=/tmp/chime-$LABEL.hd
+WAV=/tmp/chime-$LABEL.wav
+NV=/tmp/chime-nv-$LABEL
+CFG=/tmp/chime-cfg-$LABEL
+
+if pgrep -f "cordyceps pmac6200" >/dev/null; then
+	echo "FATAL: an instance is already running" >&2
+	exit 1
+fi
+
+rm -rf "$DISK" "$WAV" "$NV" "$CFG"
+mkdir -p "$NV" "$CFG"
+cp -c "$BASE" "$DISK" 2>/dev/null || cp "$BASE" "$DISK"
+
+# -video none so the run is unthrottled; sound still renders to the WAV.
+./cordyceps pmac6200 -video none -ram 64m \
+	-hard "$DISK" \
+	-seconds_to_run "$SECS" \
+	-wavwrite "$WAV" \
+	-nvram_directory "$NV" -cfg_directory "$CFG" \
+	>"/tmp/chime-$LABEL.log" 2>&1
+
+echo "wrote $WAV"
