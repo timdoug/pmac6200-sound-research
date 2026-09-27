@@ -14,7 +14,8 @@ The only file-content difference from the prior tip
 `53c3b3d39505e7b86330c55257f7cd1434069fd5` is the removal of the five files
 under `regtests/pmac_sound/`. The Lua fixture is byte-identical in `tests/mame/`.
 The relocated Python runner additionally isolates automatic screenshots under
-each test's temporary directory; documentation describes this standalone repo.
+each test's temporary directory, checks command-line paths, and rejects mono
+captures in the two-speaker smoke test. Documentation describes this standalone repo.
 
 The original series is retained locally on
 `pmac6200-sound-before-research-extraction`. No branch or repository was

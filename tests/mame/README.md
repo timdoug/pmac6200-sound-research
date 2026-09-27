@@ -2,6 +2,8 @@
 
 These diskless checks need a MAME build with `pmac6200` and its ROMs, including
 Cuda firmware. No ROMs, operating systems or disk images are distributed here.
+Use the implementation revision recorded in
+[mame-revision.md](../../docs/mame-revision.md) or a compatible later build.
 Python 3's standard library is sufficient. From this research repository's root:
 
 ```sh
@@ -14,6 +16,9 @@ Automatic screenshots also go inside each test's results directory.
 It never attaches a disk image, reads the user's MAME configuration, deletes
 existing NVRAM, or terminates other MAME instances. Results are retained for
 inspection. `--output DIR` chooses the parent of the new directory.
+That parent must already exist. Include both machine ROMs and the Cuda firmware
+and default NVRAM set; if they are in different directories, pass them as one
+quoted `--rompath '/path/to/machine-roms;/path/to/device-roms'` argument.
 
 The device fixture tests at 4,000, 22,050, 48,000 and 96,000 Hz host output rates:
 
@@ -35,7 +40,10 @@ runner requires the final `PMAC_SOUND_TEST_PASS` marker and rejects Lua errors.
 `--smoke` additionally checks ROM startup audio on `pmac6200`, `pmac5200`,
 `macqd630`, `maclc580` (both BIOS revisions), `macqd605` and `maclc520`. It requires
 their ROMs. This detects missing routes, but is not a Finder boot, sound-quality,
-or hardware-equivalence test. In a separate MAME checkout, a suitable smaller
+or hardware-equivalence test. The capture must contain at least two channels;
+both speaker channels must have a peak of at least 100 in signed 16-bit PCM
+units. Other channels (for example, floppy audio) do not count as speakers.
+In a separate MAME checkout, a suitable smaller
 build is:
 
 ```sh
@@ -85,6 +93,6 @@ Downstream resampling and the separate board filter still affect final output.
 
 ## Hardware evidence
 
-See [the evidence guide](../../docs/evidence.md) for probe versions, measurement methods, hashes
-and the limitations of the evidence. Emulation regression tests must not be
+See [the evidence guide](../../docs/evidence.md) for probe versions,
+measurement methods, hashes and the limitations of the evidence. Emulation regression tests must not be
 presented as new real-hardware measurements.

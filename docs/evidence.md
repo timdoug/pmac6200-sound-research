@@ -16,7 +16,8 @@ Macintosh ROMs or OS images. The unchanged 62-file identity manifest is
 are relative to `probes/`. Captures and borrowed ASCTester headers are preserved
 locally but ignored by Git. See [third-party provenance](../THIRD_PARTY.md) and
 [publication instructions](../PUBLISHING.md) for obtaining the dependency and
-publishing separate capture attachments. No public attachment URL exists yet.
+publishing separate capture attachments. Current availability is described in
+[captures.md](captures.md); a Git clone does not include the WAVs.
 Keep the probe directories together: FilterProbe imports StateProbe/JackProbe.
 
 | Claim | Primary local evidence | Method/caveat |
@@ -32,8 +33,8 @@ Keep the probe directories together: FilterProbe imports StateProbe/JackProbe.
 | ASC volume distortion | RampProbe/StateProbe v1, 2026-09-24 | Clean opposite channel as reference; reduced-volume negative samples are not a simple gain |
 | No functional CD-XA decoder on tested unit | XAProbe v2, 2026-09-23 | Compare programmed modes with linear playback; do not generalize to EASC |
 
-To rebuild an original probe, install a complete Retro68 toolchain and run,
-first supply the ASCTester headers as described in the root README, then run
+To rebuild an original probe, install a complete Retro68 toolchain,
+supply the ASCTester headers as described in the root README, then run
 `make -C probes/FIFOProbe RETRO68=/path/to/toolchain`. The Makefiles use
 `libInterface` without RetroConsole and produce MacBinary applications and
 floppy images. The recorded toolchain revision is unavailable. Run the matching
@@ -41,6 +42,8 @@ application on the specified Mac and collect its report/data files. Read each
 probe's source and README for its interactive steps and restoration behavior.
 Do not use the original top-level emulator runner scripts against a working
 installation: they delete/recreate test disk and NVRAM files.
+See [the probe guide](probes.md) for superseded result versions and stale
+per-probe instructions; original files are retained unchanged for provenance.
 
 For frequency-response analysis, install NumPy in a separate environment and run:
 

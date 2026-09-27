@@ -14,6 +14,23 @@ import tempfile
 import wave
 
 
+def startup_peaks(path):
+    with wave.open(str(path), "rb") as audio:
+        if audio.getsampwidth() != 2:
+            raise RuntimeError("expected 16-bit PCM capture")
+        if audio.getnchannels() < 2:
+            raise RuntimeError("expected at least two speaker channels")
+        values = array("h", audio.readframes(audio.getnframes()))
+        if sys.byteorder != "little":
+            values.byteswap()
+        # First two channels are the main speakers; exclude floppy motor audio.
+        peaks = [max((abs(v) for v in values[ch::audio.getnchannels()]), default=0)
+                 for ch in range(2)]
+        if min(peaks) < 100:
+            raise RuntimeError(f"missing startup audio: channel peaks {peaks}")
+        return peaks
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("mame", type=Path)
@@ -22,6 +39,10 @@ def main():
     parser.add_argument("--output", type=Path, help="parent for a new, uniquely named results directory")
     args = parser.parse_args()
     binary = str(args.mame.resolve())
+    if not args.mame.is_file() or not os.access(binary, os.X_OK):
+        parser.error("mame must name an existing executable")
+    if args.output is not None and not args.output.is_dir():
+        parser.error("--output must name an existing parent directory")
     script = str(Path(__file__).with_name("primetime2.lua").resolve())
     result_dir = Path(tempfile.mkdtemp(prefix="pmac-sound-", dir=args.output))
     print(f"Results: {result_dir}", flush=True)
@@ -51,18 +72,8 @@ def main():
                     raise RuntimeError("Lua fixture did not pass; see output.log")
                 detail = "device assertions passed"
             else:
-                with wave.open(str(dest / "startup.wav"), "rb") as audio:
-                    if audio.getsampwidth() != 2:
-                        raise RuntimeError("expected 16-bit PCM capture")
-                    values = array("h", audio.readframes(audio.getnframes()))
-                    if sys.byteorder != "little":
-                        values.byteswap()
-                    # First two channels are the main speakers; exclude floppy motor audio.
-                    peaks = [max((abs(v) for v in values[ch::audio.getnchannels()]), default=0)
-                             for ch in range(min(2, audio.getnchannels()))]
-                    if not peaks or min(peaks) < 100:
-                        raise RuntimeError(f"missing startup audio: channel peaks {peaks}")
-                    detail = f"startup audio peaks {peaks} (not an OS boot/fidelity test)"
+                peaks = startup_peaks(dest / "startup.wav")
+                detail = f"startup audio peaks {peaks} (not an OS boot/fidelity test)"
             print(f"PASS {label}: {detail}", flush=True)
             return True
         except (OSError, RuntimeError, subprocess.TimeoutExpired, wave.Error) as error:

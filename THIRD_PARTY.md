@@ -35,7 +35,9 @@ permission with its author. Do not apply this project's license to it.
 - JackProbe CD captures may contain third-party recordings. They remain
   ignored local files, not public release candidates without a rights review.
 
-Historical files without license notices have not been assigned a blanket
-license during this move. A public license for the owner's original probe
-and documentation work can be selected separately without relicensing these
-dependencies or captures.
+Tim Douglas has licensed his original probe code, analysis tools and documentation
+under BSD-3-Clause; see the root `LICENSE`. Existing files were not rewritten to
+add license headers, so their recorded evidence hashes remain unchanged.
+Existing third-party notices still apply, including `tests/mame/LICENSE`.
+The root grant covers only the owner's original contributions, not copied
+third-party excerpts, dependencies or third-party recorded content.

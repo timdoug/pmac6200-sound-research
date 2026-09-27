@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: BSD-3-Clause
+# Copyright (c) 2026, Tim Douglas
 """Prepare ignored probe headers from a separately obtained ASCTester checkout."""
 
 import argparse
@@ -31,6 +33,33 @@ static inline void ascWriteReg16(uint16_t offset, uint16_t value)
 """
 
 
+def build_header(original):
+    if hashlib.sha256(original).hexdigest() != BASE_SHA256:
+        raise ValueError("unexpected upstream header; no files changed")
+    marker = b"// Reads a VIA2 register\n"
+    if original.count(marker) != 1:
+        raise ValueError("unexpected upstream layout; no files changed")
+    result = original.replace(marker, WORD_HELPERS + marker, 1)
+    if hashlib.sha256(result).hexdigest() != RESULT_SHA256:
+        raise ValueError("prepared header does not match the measured version")
+    return result
+
+
+def install_headers(result, root):
+    targets = [root / name / "asctester.h" for name in PROBES]
+    for target in targets:
+        if (not target.parent.is_dir() or target.parent.is_symlink()
+                or target.is_symlink()):
+            raise ValueError(f"unsafe or missing destination: {target}")
+        if target.exists() and target.read_bytes() != result:
+            raise ValueError(f"refusing to overwrite different header: {target}")
+    for target in targets:
+        if not target.exists():
+            with target.open("xb") as output:
+                output.write(result)
+        print(f"OK {target.relative_to(root.parent)}")
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("asctester", type=Path, help="separate ASCTester Git checkout")
@@ -40,29 +69,9 @@ def main():
             "git", "-C", str(args.asctester.resolve()), "show",
             f"{REVISION}:asctester.h",
         ])
-    except (OSError, subprocess.CalledProcessError) as error:
-        parser.error(f"cannot read pinned ASCTester header: {error}")
-    if hashlib.sha256(original).hexdigest() != BASE_SHA256:
-        parser.error("unexpected upstream header; no files changed")
-    marker = b"// Reads a VIA2 register\n"
-    if original.count(marker) != 1:
-        parser.error("unexpected upstream layout; no files changed")
-    result = original.replace(marker, WORD_HELPERS + marker, 1)
-    if hashlib.sha256(result).hexdigest() != RESULT_SHA256:
-        parser.error("prepared header does not match the measured version")
-
-    root = Path(__file__).resolve().parents[1] / "probes"
-    targets = [root / name / "asctester.h" for name in PROBES]
-    for target in targets:
-        if not target.parent.is_dir() or target.is_symlink():
-            parser.error(f"unsafe or missing destination: {target}")
-        if target.exists() and target.read_bytes() != result:
-            parser.error(f"refusing to overwrite different header: {target}")
-    for target in targets:
-        if not target.exists():
-            with target.open("xb") as output:
-                output.write(result)
-        print(f"OK {target.relative_to(root.parent)}")
+        install_headers(build_header(original), Path(__file__).resolve().parents[1] / "probes")
+    except (OSError, ValueError, subprocess.CalledProcessError) as error:
+        parser.error(str(error))
     print("Headers match the original measurements; they remain ignored by Git.")
 
 
