@@ -231,31 +231,51 @@ emu.wait(0.04)
 capture_stale = false
 check(stale < 0.00001, "filter bypass does not preserve stale audio")
 
--- Ratio of filtered/dry impulse spectra cancels the ASC-to-DFAC resampler.  The
--- hook observes DFAC's fixed-rate stream, not the host-rate speaker output.
-local function impulse(filtered)
-	dfac_write(0x0f, filtered and 0x80 or 0)
-	capture_response = {}
-	sample(0, 0x4000); sample(0, 0)
-	emu.wait(0.08)
-	local result = capture_response
-	capture_response = nil
-	return result
-end
-local dry, filtered = impulse(false), impulse(true)
-local function magnitude(trace, frequency)
-	local real, imaginary = 0, 0
-	for i, value in ipairs(trace) do
-		local phase = 2 * math.pi * frequency * (i - 1) / 176400
-		real = real + value * math.cos(phase)
-		imaginary = imaginary + value * math.sin(phase)
+-- Steady tones through FIFO A, measured in DFAC's output stream at the same frequency:
+-- the filtered/dry ratio is the filter's response.  A stationary tone cancels the
+-- ASC-to-DFAC resampler, which is time-varying and would not cancel for a single impulse.
+-- The sound core renders streams up to a few tens of milliseconds ahead of the emulated
+-- time at which a register is written, so each burst follows a silent gap, its onset is
+-- located in the capture, and a settled window after that is measured.  The targets are
+-- the analog prototype's response, with room for the impulse-invariant discretization.
+-- Below a 13.5 kHz host rate the filter is bypassed and this is skipped.
+local function magnitude(trace, first, last, frequency)
+	local real, imaginary, n = 0, 0, last - first + 1
+	for i = first, last do
+		local window = 0.5 - 0.5 * math.cos(2 * math.pi * (i - first) / n)
+		local phase = 2 * math.pi * frequency * (i - first) / machine.samplerate
+		real = real + window * trace[i] * math.cos(phase)
+		imaginary = imaginary + window * trace[i] * math.sin(phase)
 	end
 	return math.sqrt(real * real + imaginary * imaginary)
 end
-for _, point in ipairs({{1000, -0.2022}, {6750, -0.4999}, {8000, -14.8346}}) do
-	local db = 20 * math.log(magnitude(filtered, point[1]) / magnitude(dry, point[1]), 10)
-	check(math.abs(db - point[2]) < 0.08,
-		string.format("DFAC response at %d Hz: %.3f dB", point[1], db))
+local function tone_level(frequency, filtered)
+	clear()
+	dfac_write(0x0f, filtered and 0x80 or 0)
+	emu.wait(0.03)
+	for n = 0, 1023 do
+		sample(0, math.floor(0x4000 * math.sin(2 * math.pi * frequency * n / 22050) + 0.5) & 0xffff)
+	end
+	capture_response = {}
+	w(0x801, 1)
+	emu.wait(0.06)
+	local trace = capture_response
+	capture_response = nil
+	local onset = 1
+	while onset < #trace and math.abs(trace[onset] - trace[1]) < 0.02 do onset = onset + 1 end
+	local first = onset + math.floor(0.002 * machine.samplerate)
+	local last = first + math.floor(0.020 * machine.samplerate) - 1
+	assert(last <= #trace, "tone burst ended before the measurement window")
+	return magnitude(trace, first, last, frequency)
+end
+if machine.samplerate >= 13500 then
+	for _, point in ipairs({{1000, -0.204, 0.1}, {6750, -0.500, 0.15}, {8000, -14.647, 0.5}}) do
+		local db = 20 * math.log(tone_level(point[1], true) / tone_level(point[1], false), 10)
+		check(math.abs(db - point[2]) < point[3],
+			string.format("DFAC response at %d Hz: %.3f dB", point[1], db))
+	end
+else
+	print("SKIP: DFAC filter is bypassed below a 13.5 kHz host rate (" .. machine.samplerate .. ")")
 end
 
 clear()

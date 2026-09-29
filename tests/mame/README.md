@@ -84,11 +84,17 @@ DFAC2's switchable filter is an analog approximation to the measured response:
 `scipy.signal.ellip(5, 0.5, 60, 2*pi*6750, analog=True)`. The first pole is
 2718.8 Hz; the two second-order sections have `(f0, Q, fzero)` of
 `(4964.0, 1.2727, 19217.8)` and `(6861.7, 5.5514, 12502.8)`.
-All poles and zeros use **one** bilinear transform prewarped at 6750 Hz.
-The 176,400 Hz stream rate is numerical oversampling, not an asserted DFAC2
-clock. It keeps the transfer function independent of host output rate and
-preserves CD bandwidth before mixing. Relative to the analog fit, bilinear
-warping is about -0.04 dB at 7.07 kHz, -0.19 dB at 8 kHz and -0.74 dB at 10.5 kHz.
+The DFAC2 stream runs at the host output rate, like MAME's other filter
+devices, and the prototype is discretized by impulse invariance, so there is
+no bilinear frequency warping. Relative to the analog fit the response is
+within 0.6 dB up to 9 kHz at 44.1 or 48 kHz host rates and within 0.3 dB at
+96 kHz; aliasing of the prototype's stopband raises the floor above 11 kHz to
+about -41 dB, and the unnormalized DC gain is within 0.1 dB of unity. Below a
+13.5 kHz host rate, where Nyquist falls under the passband edge, the filter
+passes the signal through, as MAME's filter devices do. The fixture measures
+steady tones rather than an impulse, because MAME's resampler is time-varying,
+and compares against the analog values with limits of 0.1, 0.15 and 0.5 dB at
+1, 6.75 and 8 kHz; it skips those points where the filter is bypassed.
 Downstream resampling and the separate board filter still affect final output.
 
 ## Hardware evidence
