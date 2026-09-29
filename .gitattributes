@@ -1,8 +1,7 @@
 * text=auto eol=lf
 
-# Historical evidence is byte-preserved, including on CRLF-configured clones.
+# Probe sources, results and notes are byte-preserved, including on CRLF-configured clones.
 /probes/** -text
-/notes/historical/** -text
+/notes/** -text
 /archive/** -text
-/results/** -text
 *.bin binary

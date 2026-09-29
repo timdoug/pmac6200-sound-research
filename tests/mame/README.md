@@ -1,104 +1,57 @@
-# PrimeTime II / DFAC2 sound regression checks
+# MAME regression checks
 
-These diskless checks need a MAME build with `pmac6200` and its ROMs, including
-Cuda firmware. No ROMs, operating systems or disk images are distributed here.
-Use the implementation revision recorded in
-[mame-revision.md](../../docs/mame-revision.md) or a compatible later build.
-Python 3's standard library is sufficient. From this research repository's root:
+Diskless checks against `pmac6200`. They need a MAME build with the sound
+changes, the machine ROM, and the Cuda firmware and NVRAM set. Python's
+standard library is enough.
 
 ```sh
 python3 tests/mame/run.py /path/to/mame --rompath /path/to/roms
 python3 tests/mame/run.py /path/to/mame --rompath /path/to/roms --smoke
 ```
 
-The runner creates a new temporary results directory and prints its location.
-Automatic screenshots also go inside each test's results directory.
-It never attaches a disk image, reads the user's MAME configuration, deletes
-existing NVRAM, or terminates other MAME instances. Results are retained for
-inspection. `--output DIR` chooses the parent of the new directory.
-That parent must already exist. Include both machine ROMs and the Cuda firmware
-and default NVRAM set; if they are in different directories, pass them as one
-quoted `--rompath '/path/to/machine-roms;/path/to/device-roms'` argument.
+If ROMs live in several directories, quote them as one semicolon-separated
+`--rompath`. The runner makes a fresh temporary directory for NVRAM, config
+and screenshots, never attaches a disk, and prints where the results went.
+A run passes only if the fixture prints its final `PMAC_SOUND_TEST_PASS`.
 
-The device fixture tests at 4,000, 22,050, 48,000 and 96,000 Hz host output rates:
+The fixture (`primetime2.lua`) suspends the guest CPUs and drives the ASC
+through its memory map and DFAC2 through Cuda's I2C GPIOs. It runs at 4000,
+22050, 48000 and 96000 Hz host rates and checks:
 
-- FIFO capacity, byte/word formats, mode-transition timing and recording reads;
-- the last FIFO A sample before recording-mode fallback to FIFO B;
+- FIFO capacity, byte and word formats, mode-transition timing and record reads;
+- the last FIFO A sample before recording falls back to FIFO B;
 - separate and simultaneous record/playback interrupt requests;
-- DFAC2 read subaddresses, absent registers and single-byte transfers, alongside
-  an ordinary multi-byte/repeated-start I2C client on the same bus;
-- finite, bounded filter output, frequency response at 1, 6.75 and 8 kHz, and
-  absence of stale audio after bypass;
-- partially filled FIFOs, pending IRQs and filter history across save/load.
+- DFAC2 single-byte read framing, absent-register NAKs, and that an ordinary
+  multi-byte I2C client on the same bus is unaffected;
+- the output filter: bounded output, no stale audio after bypass, and the
+  response at 1, 6.75 and 8 kHz against the analog fit;
+- FIFO contents, pending interrupts and filter state across save/load.
 
-The Lua fixture suspends the guest CPUs through saved items, but lets emulated
-time and audio run. It accesses the ASC through its actual memory map and DFAC2
-through Cuda's GPIO. The internal saved-item names are test-fixture dependencies,
-not a public device API. A MAME exit status of zero alone is not a pass: the
-runner requires the final `PMAC_SOUND_TEST_PASS` marker and rejects Lua errors.
+`--smoke` also boots `pmac6200`, `pmac5200`, `macqd630`, `maclc580` (both
+ROMs), `macqd605` and `maclc520` for 15 seconds and checks that both speaker
+channels carry startup audio. It catches missing routes, nothing more.
 
-`--smoke` additionally checks ROM startup audio on `pmac6200`, `pmac5200`,
-`macqd630`, `maclc580` (both BIOS revisions), `macqd605` and `maclc520`. It requires
-their ROMs. This detects missing routes, but is not a Finder boot, sound-quality,
-or hardware-equivalence test. The capture must contain at least two channels;
-both speaker channels must have a peak of at least 100 in signed 16-bit PCM
-units. Other channels (for example, floppy audio) do not count as speakers.
-In a separate MAME checkout, a suitable smaller
-build is:
+## How the filter is checked
 
-```sh
-make SUBTARGET=pmacsound SOURCES=src/mame/apple/maccordyceps.cpp,src/mame/apple/macquadra630.cpp,src/mame/apple/macquadra605.cpp,src/mame/apple/maclc3.cpp -j4
-```
+DFAC2's stream runs at the host output rate, and the measured elliptic
+prototype is discretized by impulse invariance, so the response is within
+0.6 dB of the analog fit up to 9 kHz at 44.1 or 48 kHz. Below a 13.5 kHz host
+rate the filter is bypassed, and the response points are skipped. The fixture
+measures steady tones rather than an impulse, because MAME's default resampler
+is time-varying, and locates each burst's onset in the capture, because the
+sound core renders a little ahead of register writes.
 
-Then pass that checkout's `pmacsound` executable to this repository's runner.
+## What the model leaves out
 
-## Scope and modelling limits
-
-The new ASC model is opt-in for the Power Macintosh 5200/6200 configuration.
-Measurements were made on one Performa 6200CD, not every PrimeTime II board.
-Quadra 630 and LC 580 retain their existing EASC approximation. Their ROMs write
-`$60` to `$806`, which would mute the right channel using the 6200's measured
-volume layout, despite writing samples to both FIFOs. Do not extend the new
-model to these systems without resolving this difference on hardware.
-
-Known approximations, deliberately not hidden by these tests:
-
-- Recording returns offset-binary silence, including when CD or output loopback
-  is selected. Analog input, AGC and playthrough mixing are not implemented.
-- The real 6200's negative-sample distortion at reduced ASC hardware volume is
-  not modelled. The usual Mac OS path uses full hardware volume and software gain.
-- Partial-byte accesses to the **16-bit** window are unmeasured. The provisional
-  policy is one sample per write, inactive lane zero; the fixture checks that
-  policy, not hardware accuracy. The separate 8-bit windows were measured.
-- Interrupts retain per-source requests until disabled, or until status is read
-  after the corresponding threshold condition is serviced. Simultaneous-source
-  acknowledgement needs a hardware probe; the regression checks internal
-  consistency of this policy, not a newly measured electrical behavior.
-- Reads from the playback window return FIFO data instead of hardware bus noise.
-- Filter switching transients are unmeasured. The filter runs while bypassed to
-  avoid replaying stale state when re-enabled.
-- The board reconstruction filter is fitted to one unit. Analog CD leakage
-  through mute switches is not modelled; mute means silence in the emulator.
-
-DFAC2's switchable filter is an analog approximation to the measured response:
-`scipy.signal.ellip(5, 0.5, 60, 2*pi*6750, analog=True)`. The first pole is
-2718.8 Hz; the two second-order sections have `(f0, Q, fzero)` of
-`(4964.0, 1.2727, 19217.8)` and `(6861.7, 5.5514, 12502.8)`.
-The DFAC2 stream runs at the host output rate, like MAME's other filter
-devices, and the prototype is discretized by impulse invariance, so there is
-no bilinear frequency warping. Relative to the analog fit the response is
-within 0.6 dB up to 9 kHz at 44.1 or 48 kHz host rates and within 0.3 dB at
-96 kHz; aliasing of the prototype's stopband raises the floor above 11 kHz to
-about -41 dB, and the unnormalized DC gain is within 0.1 dB of unity. Below a
-13.5 kHz host rate, where Nyquist falls under the passband edge, the filter
-passes the signal through, as MAME's filter devices do. The fixture measures
-steady tones rather than an impulse, because MAME's resampler is time-varying,
-and compares against the analog values with limits of 0.1, 0.15 and 0.5 dB at
-1, 6.75 and 8 kHz; it skips those points where the filter is bypassed.
-Downstream resampling and the separate board filter still affect final output.
-
-## Hardware evidence
-
-See [the evidence guide](../../docs/evidence.md) for probe versions,
-measurement methods, hashes and the limitations of the evidence. Emulation regression tests must not be
-presented as new real-hardware measurements.
+- Recording returns silence: no analog input, AGC or playthrough.
+- The `$806` negative-sample distortion at reduced hardware volume (Mac OS
+  keeps hardware volume at full and scales in software).
+- Partial-byte writes to the 16-bit window enqueue one sample with the other
+  lane zero; unmeasured.
+- Interrupt requests are held per source until serviced; simultaneous-source
+  acknowledgement is unmeasured.
+- Reads from the playback window return FIFO data rather than bus noise.
+- Filter switching transients, the 0.7 dB passband gain with the filter on,
+  and analog leakage through the mutes.
+- The DAC's sample-and-hold droop, which MAME's default resampler approximates
+  and the HQ resampler doesn't.
