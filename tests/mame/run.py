@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 # license:BSD-3-Clause
 # copyright-holders:Tim Douglas
-"""Run diskless Apple sound checks with isolated writable state (no third-party modules)."""
+"""Run Apple sound checks with isolated writable state (no third-party modules)."""
 
 import argparse
 from array import array
 from concurrent.futures import ThreadPoolExecutor
 import os
+import math
 from pathlib import Path
 import subprocess
 import sys
@@ -31,6 +32,20 @@ def startup_peaks(path):
         return peaks
 
 
+def make_audio_cd(dest):
+    """Generate our own stereo test tones; no guest software or disc assets needed."""
+    samples = array("h", (round(8192 * math.sin(2 * math.pi * frequency * n / 44100))
+                          for n in range(5 * 44100) for frequency in (400, 600)))
+    if sys.byteorder != "little":
+        samples.byteswap()
+    with wave.open(str(dest / "tones.wav"), "wb") as audio:
+        audio.setparams((2, 2, 44100, 0, "NONE", "not compressed"))
+        audio.writeframes(samples.tobytes())
+    cue = dest / "tones.cue"
+    cue.write_text('FILE "tones.wav" WAVE\n  TRACK 01 AUDIO\n    INDEX 01 00:00:00\n', encoding="ascii")
+    return cue
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("mame", type=Path)
@@ -46,18 +61,19 @@ def main():
     script = str(Path(__file__).with_name("primetime2.lua").resolve())
     result_dir = Path(tempfile.mkdtemp(prefix="pmac-sound-", dir=args.output))
     print(f"Results: {result_dir}", flush=True)
+    audio_cd = make_audio_cd(result_dir)
     env = dict(os.environ, SDL_VIDEODRIVER="dummy", SDL_AUDIODRIVER="dummy")
 
     def run(label, system, extra, fixture):
         dest = result_dir / label
         dest.mkdir()
         cmd = [binary, system, "-noreadconfig", "-video", "none", "-sound", "none",
-               "-nothrottle", "-skip_gameinfo", "-seconds_to_run", "5" if fixture else "15",
+               "-nothrottle", "-skip_gameinfo", "-seconds_to_run", "8" if fixture else "15",
                "-rompath", args.rompath, "-nvram_directory", str(dest / "nvram"),
                "-cfg_directory", str(dest / "cfg"), "-state_directory", str(dest / "sta"),
                "-snapshot_directory", str(dest / "snap")]
         if fixture:
-            cmd += ["-autoboot_script", script, "-autoboot_delay", "2"]
+            cmd += ["-autoboot_script", script, "-autoboot_delay", "2", "-cdrom", str(audio_cd)]
         else:
             cmd += ["-wavwrite", str(dest / "startup.wav")]
         cmd += extra
@@ -81,7 +97,7 @@ def main():
             return False
 
     jobs = [(f"fixture-{rate}", "pmac6200", ["-samplerate", str(rate)], True)
-            for rate in (4000, 22050, 48000, 96000)]
+            for rate in (4000, 22050, 44100, 48000, 96000)]
     if args.smoke:
         jobs += [(system, system, [], False)
                  for system in ("pmac6200", "pmac5200", "macqd630", "macqd605", "maclc520")]

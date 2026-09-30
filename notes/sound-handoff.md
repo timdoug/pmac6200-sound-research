@@ -1,5 +1,11 @@
 # Performa 6200CD sound: handoff (2026-09-24)
 
+**Implementation update (2026-09-29):** The branch is now a three-commit series.
+DFAC2 uses stock volume, biquad and mixer devices; the board uses RC filters;
+the ASC derives directly from its base and schedules FIFO threshold interrupts.
+See [the current MAME checks](../tests/mame/README.md) for the revision, filter
+approximation and validation. The implementation descriptions below are historical.
+
 Everything known about the pmac6200's sound hardware: what MAME now does, the evidence behind
 it, what's still open, and how to carry on. This supersedes `CORDYCEPS-SOUND-STATUS.md`.
 `CORDYCEPS-ASC.md` is the detailed lab notebook, in chronological order with every probe

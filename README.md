@@ -15,7 +15,8 @@ probe and result file behind it.
 
 - `probes/`: the probe applications (68k, built with Retro68), their Makefiles,
   analysis scripts, and the dated hardware results next to them.
-- `tests/mame/`: a diskless MAME regression fixture and runner.
+- `tests/mame/`: a MAME regression fixture and runner using a generated tone CD,
+  without a hard disk or guest OS.
 - `notes/`: the investigation notes, including the ROM decompilation findings.
 - `archive/`: the ROM analysis helpers those findings came from.
 
