@@ -1,7 +1,14 @@
 # Power Macintosh 5200/6200 sound research
 
-Hardware probes, measurements and emulator checks behind the PrimeTime II /
+Hardware probes, measurements and emulator checks behind the PrimeTime III /
 DFAC2 sound emulation in MAME (`pmac6200`, `pmac5200`).
+
+The notes call the sound ASIC PrimeTime II, as the 5200/6200 developer note
+and Apple's own ROM code do.  Apple's Mac OS 7.6.1 Streaming Audio Update
+article says PrimeTime II was 8-bit and shipped in only a limited number of
+early 5200s; the 16-bit chip in the rest of the family is PrimeTime III
+(343S1189).  The measured board plays 16-bit audio, so MAME models it as
+PrimeTime III.  Confirmation of the U6 chip marking is pending.
 
 Everything was measured on one Performa 6200CD (ROM `63ABFD3F`, System 7.6.1),
 recorded from the line output through a Pioneer DJM-900NXS2. Other board

@@ -17,7 +17,7 @@ and screenshots, generates a five-second stereo tone CD, and prints where
 the results went. No guest OS or third-party disc assets are used.
 A run passes only if the fixture prints its final `PMAC_SOUND_TEST_PASS`.
 
-The fixture (`primetime2.lua`) suspends the guest CPUs and drives the ASC
+The fixture (`primetime3.lua`) suspends the guest CPUs and drives the ASC
 through its memory map and DFAC2 through Cuda's I2C GPIOs. It runs at 4000,
 22050, 44100, 48000 and 96000 Hz host rates and checks:
 

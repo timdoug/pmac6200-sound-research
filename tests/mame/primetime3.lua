@@ -4,7 +4,7 @@
 local machine = manager.machine
 local cpu = machine.devices[":maincpu"]
 local cuda = machine.devices[":cuda:cudamcu"]
-local asc = machine.devices[":primetimeii:asc"]
+local asc = machine.devices[":primetimeiii:asc"]
 local space = cpu.spaces["program"]
 
 local function item(device, name)
@@ -39,7 +39,7 @@ local function clear()
 	w(0x803, 0x80); w(0x803, 0); w(0x806, 0xee)
 end
 
-check(r(0x800) == 0xbb, "PrimeTime II version")
+check(r(0x800) == 0xbb, "PrimeTime III version")
 clear()
 w(0x80a, 1)
 emu.wait(0.0002)
@@ -78,11 +78,11 @@ check(wrptr:read(1) == 4 and space:read_u16(0x50f15800) == 0x1200,
 	"provisional partial-word policy: one sample per bus write, inactive lane zero")
 
 clear()
-machine.sounds[":primetimeii:asc"].hook = true
+machine.sounds[":primetimeiii:asc"].hook = true
 local left_final, left_fallback = 0, 0
 local capture_last = true
 emu.register_sound_update(function(outputs)
-	local channels = outputs[":primetimeii:asc"]
+	local channels = outputs[":primetimeiii:asc"]
 	if capture_last and channels then
 		for _, value in ipairs(channels[1]) do
 			if math.abs(value - 0.5) < 0.00001 then left_final = left_final + 1 end

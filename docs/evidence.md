@@ -26,7 +26,11 @@ sample-and-hold droop. Both are empirical fits to this one unit.
 Apple's LC 630 / Quadra 630 and 5200/6200 developer notes corroborate the
 three FIFOs, DFAC II on Cuda's I2C bus, the analog CD path and simultaneous
 playback and recording. The 5200/6200 note calls the output 8-bit; the
-measurements and the 6200/6300 service manual say 16-bit.
+measurements and the 6200/6300 service manual say 16-bit.  Apple's Streaming
+Audio Update article (TA37180) explains the difference: the 8-bit PrimeTime II
+shipped in only a limited number of early 5200s, and the rest of the family has
+the 16-bit PrimeTime III, 343S1189.  Its identification test is whether 16-bit
+can be chosen, which this board passes.  The U6 marking is not yet recorded.
 
 ## Superseded results
 

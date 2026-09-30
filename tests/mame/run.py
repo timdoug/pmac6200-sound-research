@@ -58,7 +58,7 @@ def main():
         parser.error("mame must name an existing executable")
     if args.output is not None and not args.output.is_dir():
         parser.error("--output must name an existing parent directory")
-    script = str(Path(__file__).with_name("primetime2.lua").resolve())
+    script = str(Path(__file__).with_name("primetime3.lua").resolve())
     result_dir = Path(tempfile.mkdtemp(prefix="pmac-sound-", dir=args.output))
     print(f"Results: {result_dir}", flush=True)
     audio_cd = make_audio_cd(result_dir)
