@@ -30,7 +30,7 @@ measurements and the 6200/6300 service manual say 16-bit.  Apple's Streaming
 Audio Update article (TA37180) explains the difference: the 8-bit PrimeTime II
 shipped in only a limited number of early 5200s, and the rest of the family has
 the 16-bit PrimeTime III, 343S1189.  Its identification test is whether 16-bit
-can be chosen, which this board passes.  The U6 marking is not yet recorded.
+can be chosen, which this board passes, and its chip is marked 343S1189-A.
 
 ## Superseded results
 
