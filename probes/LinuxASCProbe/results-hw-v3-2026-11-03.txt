@@ -1,0 +1,8 @@
+ascprobe: version bb
+== v3: one interrupt line for both FIFOs
+record request raised the line: 23100 us; B fill 87, 804 05
+enable playback (below half) while the record request holds the line: irq 0
+drop the record request, playback still requesting: irq 0
+toggle F29 off and on: irq 1
+both off, then both on with both conditions true: irq 1
+done

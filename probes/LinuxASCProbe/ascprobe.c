@@ -763,6 +763,57 @@ static void counter2(void)
 	reset();
 }
 
+static void shared(void)
+{
+	long us;
+
+	out("== v3: one interrupt line for both FIFOs\n");
+	reset();
+	push(1, 600, 0);
+	wb(0x801, 1);
+	wb(0xf09, 0);
+	irq_clear();
+	wb(0x80a, 1);
+	us = wait_irq(60000);
+	out("record request raised the line: ");
+	dec(us < 0 ? -1 : us / 100 * 100);
+	out(" us; B fill ");
+	dec(fill_b() / 2);
+	out(", 804 ");
+	hex(rb(0x804), 2);
+	out("\n");
+	irq_clear();
+	wb(0xf29, 0);
+	wait_us(200);
+	out("enable playback (below half) while the record request holds the line: irq ");
+	dec(irq());
+	out("\n");
+	irq_clear();
+	wb(0xf09, 1);
+	wait_us(200);
+	out("drop the record request, playback still requesting: irq ");
+	dec(irq());
+	out("\n");
+	irq_clear();
+	wb(0xf29, 1);
+	wb(0xf29, 0);
+	wait_us(200);
+	out("toggle F29 off and on: irq ");
+	dec(irq());
+	out("\n");
+	irq_clear();
+	wb(0xf29, 1);
+	wb(0xf09, 1);
+	wait_us(200);
+	wb(0xf29, 0);
+	wb(0xf09, 0);
+	wait_us(200);
+	out("both off, then both on with both conditions true: irq ");
+	dec(irq());
+	out("\n");
+	reset();
+}
+
 void main2(int argc, char **argv)
 {
 	asc = map(0x50f14000, 0x2000);
@@ -777,10 +828,13 @@ void main2(int argc, char **argv)
 		irqs();
 		record();
 	}
-	regs_on();
-	status_ab();
-	record2();
-	counter2();
+	if (argc < 2 || argv[1][1] != '3') {
+		regs_on();
+		status_ab();
+		record2();
+		counter2();
+	}
+	shared();
 	wb(0x806, 0xee);
 	out("done\n");
 	flush();

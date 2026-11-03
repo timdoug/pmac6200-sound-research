@@ -25,6 +25,10 @@ What the hardware showed that MAME didn't model before that commit:
 - The FIFOs hold bytes: a byte store into the 16-bit window adds one byte, a halfword two and
   a word four.
 - Recording runs, and interrupts at half full, with the chip off (`$801` = 0).
+- Both FIFOs share one interrupt line, and VIA2 latches only its rising edge: a request that
+  comes up while the other holds the line raises no edge, and clearing the first leaves the line
+  high (`ascprobe v3`, `results-*-v3-*`). MAME behaves the same. A handler that clears one
+  request at a time can lose the other for good; Linux's clears both before servicing either.
 
 Still different, and not modelled: registers with nothing behind them read `$7F` on the 6200
 (the undriven bus value RecProbe also saw) and 0 in MAME; `$804` after arbitrary pointer writes;
