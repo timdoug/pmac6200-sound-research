@@ -1,0 +1,125 @@
+ascprobe: version bb
+== registers after reset
+800 bb  801 00  802 0c  803 00  805 00  806 ee  807 00
+808 00  809 00  80a 02  80b 00  80c 00  80d 00  80e 00  80f 00
+== write ff / 00 / 55, read back
+802: 1f 00 15
+805: 00 00 00
+806: ee 00 44
+807: 00 00 00
+808: 00 00 00
+809: 00 00 00
+80b: 00 00 00
+80c: 00 00 00
+80d: 00 00 00
+80e: 00 00 00
+f04: 00 00 00
+f05: 00 00 00
+f06: 00 00 00
+f07: 00 00 00
+f08: 00 00 00
+f0a: 00 00 00
+f0b: ff 00 55
+f0c: 00 00 00
+f0d: ff 00 55
+f0f: 0f 00 05
+f10: ff 00 55
+f13: ff 00 55
+f17: ff 00 55
+f24: 00 00 00
+f25: 00 00 00
+f26: 00 00 00
+f27: 00 00 00
+f28: 00 00 00
+f2a: 07 00 05
+f2b: ff 00 55
+f2c: 07 00 05
+f2d: ff 00 55
+f2f: 0f 00 05
+f30: ff 00 55
+f37: ff 00 55
+f09: 01 00 01
+f29: 01 00 01
+80a: 03 02 03
+== pointer writes (chip off)
+all ff: B wr 7ff rd 7ff rec wr 7ff rd 7ff 804 0e irq 0
+B wr low = 10: B wr 710 rd 7ff rec wr 7ff rd 7ff 804 02 irq 0
+after clear: B wr 000 rd 000 rec wr 000 rd 000 804 0e irq 0
+== FIFO B fill, chip off
+0: B wr 000 rd 000 rec wr 000 rd 000 804 0e irq 0
+1: B wr 002 rd 000 rec wr 000 rd 000 804 06 irq 0
+2: B wr 004 rd 000 rec wr 000 rd 000 804 06 irq 0
+511: B wr 3fe rd 000 rec wr 000 rd 000 804 06 irq 0
+512: B wr 400 rd 000 rec wr 000 rd 000 804 06 irq 0
+513: B wr 402 rd 000 rec wr 000 rd 000 804 02 irq 0
+1023: B wr 7fe rd 000 rec wr 000 rd 000 804 02 irq 0
+1024: B wr 000 rd 000 rec wr 000 rd 000 804 0a irq 0
+1025: B wr 000 rd 000 rec wr 000 rd 000 804 0a irq 0
+== FIFO A fill, chip off
+A 1025: B wr 000 rd 000 rec wr 000 rd 000 804 0a irq 0
+== access widths into FIFO B
+stb 1800: B wr 001 rd 000 rec wr 000 rd 000 804 06 irq 0
+stb 1801: B wr 002 rd 000 rec wr 000 rd 000 804 06 irq 0
+sth 1800: B wr 004 rd 000 rec wr 000 rd 000 804 06 irq 0
+stw 1800: B wr 008 rd 000 rec wr 000 rd 000 804 06 irq 0
+stb 400 (byte window): B wr 00a rd 000 rec wr 000 rd 000 804 06 irq 0
+stb 7ff (byte window): B wr 00c rd 000 rec wr 000 rd 000 804 06 irq 0
+== reads, chip off, not recording
+4 in B: B wr 008 rd 000 rec wr 000 rd 000 804 06 irq 0
+lhz 1800: B wr 008 rd 000 rec wr 000 rd 000 804 06 irq 0
+lbz 400: B wr 008 rd 000 rec wr 000 rd 000 804 06 irq 0
+lhz 1000: B wr 008 rd 000 rec wr 000 rd 000 804 06 irq 0
+== drain rate: 1024 frames, chip on
+samples/s 22049
+== counter $F2E rate
+counts/s 1410796 over 20000 reads (laps can hide in stalls)
+== playback interrupt
+enable with B full: irq 0
+drain from full: edge after 23100 us, B fill 512, 804 06
+3 ms after clearing the flag, unserviced: irq 0
+refill only, then drain: edge after 23200 us, B fill 512, 804 06
+refill + read 804, then drain: edge after 23100 us, B fill 512, 804 06
+F29 1, refill, F29 0, then drain: edge after 23100 us, B fill 512, 804 06
+enable while below half: edge after 0 us, B fill 255, 804 06
+enable after underrun: edge after 0 us, B fill 0, 804 0e
+== recording
+80a reads 03
+chip off, 10 ms: rec wr moved 442 bytes
+chip on, 10 ms: rec wr moved 442 bytes in 10000 us
+== record interrupt
+from empty: 23100 us, rec fill 1024 bytes, 804 05
+restart past half: 0 us, rec fill 1026 bytes, 804 01
+== record reads
+lhz 1000 pops 2, lwz 1000 pops 4, lbz 000 pops 2, lwz 000 pops 8 bytes
+== v2: reads with the chip on
+80b 00  80f 00  f04 00  f0a 00  f10 00  f24 00  f30 00  
+f2a-f2d after clear: 0000 0000, f0a-f0d: 0000 0000
+after 100 to A and B: f2a-f2d 00c8 0000
+after 2 ms playing: f2a-f2d 00c8 0058, B rd 058
+== v2: $804 against A and B fill, chip off
+A 0 B 0: 804 0e
+A 600 B 0: 804 02
+A 0 B 600: 804 02
+A 600 B 100: 804 02
+A 100 B 600: 804 02
+A 1024 B 0: 804 0a
+A 0 B 1024: 804 0a
+A 1024 B 100: 804 02
+A 100 B 1024: 804 02
+A 1024 B 1024: 804 0a
+A 513 B 513: 804 02
+A 512 B 512: 804 06
+== v2: which FIFO drives the playback interrupt
+A 1024, B 700, F29 on: edge after 23100 us, B fill 188, 804 06
+A 700, B 1024, F29 on: edge after 23200 us, B fill 512, 804 06
+A and B 1024, only F09 on: no edge, B fill 0, 804 0e
+== v2: recording with the chip off
+chip off, from empty: 23100 us, rec fill 1024 bytes, 804 0d
+== v2: record threshold, 5 runs, polling $804 bit 0 (us, rec fill bytes)
+23200 1024  23100 1024  23100 1024  23100 1024  23100 1024  
+== v2: record interrupt after reading below half without ack
+read 400 samples, then: 18100 us, rec fill 1024 bytes
+== v2: counter, 16 reads 20 us apart against the time base
+1381578 1374345 1423429 1423429 1423429 1374345 1423429 1423429 1423429 1374345 1423429 1423429 1423429 1374345 1423429 1423429  (16 unstalled)
+1000 reads take 19 us
+done

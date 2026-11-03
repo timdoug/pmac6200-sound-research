@@ -74,8 +74,26 @@ check(wrptr:read(1) == 2 and space:read_u16(0x50f15800) == 0x2000,
 clear()
 space:write_u8(0x50f15800, 0x12)
 space:write_u8(0x50f15801, 0x34)
-check(wrptr:read(1) == 4 and space:read_u16(0x50f15800) == 0x1200,
-	"provisional partial-word policy: one sample per bus write, inactive lane zero")
+check(wrptr:read(1) == 2 and space:read_u16(0x50f15800) == 0x1234,
+	"byte writes to the 16-bit window add one byte each")
+clear()
+for i = 1, 600 do sample(0, 0) end
+check(r(0x804) == 0x02, "half-empty status needs FIFO A half empty too")
+clear()
+for i = 1, 1024 do sample(0, 0) end
+for i = 1, 100 do sample(1, 0) end
+check(r(0x804) == 0x02, "empty-or-full status needs both FIFOs empty or full")
+clear()
+for i = 1, 100 do sample(0, 0) end
+check(r(0xf2a) == 0x00 and r(0xf2b) == 0xc8 and r(0xf2c) == 0x00 and r(0xf2d) == 0x00,
+	"FIFO A's write and read pointers at $F2A-$F2D")
+clear()
+for i = 1, 520 do sample(0, 0); sample(1, 0) end
+w(0xf29, 0); w(0x801, 1)
+emu.wait(0.001)
+check((pending:read(0) & 4) ~= 0, "playback request at half empty")
+for i = 1, 100 do sample(0, 0); sample(1, 0) end
+check((pending:read(0) & 4) == 0, "playback request drops once a refill passes half, without a $804 read")
 
 clear()
 machine.sounds[":primetimeiii:asc"].hook = true
