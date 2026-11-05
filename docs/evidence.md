@@ -17,6 +17,9 @@ Result paths are relative to `probes/`.
 | Switchable 7 kHz filter and always-on board filter responses | `FilterProbe/analysis-hw-v1-2026-09-24.txt` (from `FilterProbe/analyze.py`) |
 | `$806` volume steps and negative-sample distortion | `RampProbe/results-hw-v1-2026-09-24.txt`, `StateProbe/results-hw-v1-2026-09-24.txt` |
 | No working CD-XA decoder | `XAProbe/results-hw-v2-2026-09-23.txt` |
+| `$804` and the playback interrupt need both FIFOs in that state; a request drops once its condition clears; FIFO A's playback pointers at `$F2A`-`$F2D` | `LinuxASCProbe/results-hw-2026-11-03.txt` |
+| A byte store into the 16-bit window adds one byte, a halfword two and a word four | `LinuxASCProbe/results-hw-2026-11-03.txt` |
+| Both FIFOs share one interrupt line, and VIA2 latches only its rising edge | `LinuxASCProbe/results-hw-v3-2026-11-03.txt` |
 
 The filter fits: the switchable filter is `scipy.signal.ellip(5, 0.5, 60,
 2*pi*6750, analog=True)`, within 0.6 dB rms of the measurement; the board
@@ -46,8 +49,8 @@ from these:
 
 ## Not measured
 
-- Partial-byte writes to the 16-bit FIFO window.
-- Interrupt acknowledgement with playback and recording active at once.
+- Acknowledging one interrupt source while the other is still active, beyond the
+  shared-line behavior LinuxASCProbe v3 shows.
 - Power-on values of DFAC2 `$0C`-`$0F` and the ASC registers (the ROM writes
   them before anything can read them).
 - Whether writing `$F0E`/`$F2E` loads the counter, and whether a mode switch
